@@ -16,7 +16,7 @@
       <i class="iconfont icon-shipin iconfont_item"></i>
       <span class="tab_txt">视频</span>
     </router-link>
-    <router-link tag="div" class="footer_tab_item" to="/login">
+    <router-link tag="div" class="footer_tab_item" to="/my_time">
       <i class="iconfont icon-wodedangxuan iconfont_item"></i>
       <span class="tab_txt">我的</span>
     </router-link>

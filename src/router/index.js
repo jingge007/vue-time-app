@@ -2,7 +2,8 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import time from 'components/index/time'
 import login from 'components/login/login'
-import store from "../store/"
+import myTime from 'components/my_time/my_time'
+import store from "../store"
 import * as types from '../store/mutation-types'
 
 Vue.use(Router)
@@ -19,6 +20,10 @@ const routes = [
     component: time
   },
   {
+    path: '/my_time',
+    component: myTime
+  },
+  {
     path: '/login',
     component: login,
     meta: {
@@ -28,9 +33,9 @@ const routes = [
 ]
 
 // 页面刷新时，重新赋值talg
-if (window.localStorage.getItem('talg')) {
-  console.log(window.localStorage.getItem('talg'));
-  store.dispatch(types.SET_FOOTER_TALG, false);
+if (window.localStorage.getItem('user')) {
+  let item = JSON.parse(window.localStorage.getItem('user'));
+  store.commit(types.SET_FOOTER_TALG, item.talg);
 }
 
 
