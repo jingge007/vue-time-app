@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import time from 'components/index/time'
 import login from 'components/login/login'
 import myTime from 'components/my_time/my_time'
+import citylist from 'components/citylist/citylist'
 import store from "../store"
 import * as types from '../store/mutation-types'
 
@@ -29,13 +30,22 @@ const routes = [
     meta: {
       requireAuth_talg: true
     }
-  }
+  },
+  {
+    path: '/citylist',
+    component: citylist
+  },
 ]
 
 // 页面刷新时，重新赋值talg
 if (window.localStorage.getItem('user')) {
   let item = JSON.parse(window.localStorage.getItem('user'));
   store.commit(types.SET_FOOTER_TALG, item.talg);
+}
+
+if (window.localStorage.getItem('city')) {
+  let item = JSON.parse(window.localStorage.getItem('city'));
+  store.commit(types.SET_CITY_NAME, item);
 }
 
 
