@@ -7,31 +7,18 @@
       </span>
     </div>
     <search></search>
-    <div class="city">
-      <div class="current_city">
-        <span>当前城市</span>
-        <span class="current_city_txt">{{current_city}}</span>
-      </div>
-    </div>
+    <city></city>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
-  import {mapMutations, mapGetters} from 'vuex'
   import search from 'base/search/searchBox'
-  import {getCity} from 'api/selling_tickets'
+  import city from 'base/city/city'
+  import {mapMutations} from 'vuex'
 
   export default {
     data() {
       return {}
-    },
-    created() {
-      this._getCity();
-    },
-    computed: {
-      ...mapGetters({
-        current_city: 'cityName'
-      })
     },
     methods: {
       ...mapMutations({
@@ -43,35 +30,15 @@
         this.set_footer_talg(talg);
         this.$router.back(-1);
       },
-      // 获取城市列表的数据
-      _getCity() {
-        getCity().then((res) => {
-          console.log(res);
-          let city = res.data.p;
-          this.handleCity(city);
-        })
-      },
-      handleCity(data) {
-        let citys = {};
-        let LetterCity = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
-        for (let i = 0; i < LetterCity.length; i++) {
-          citys[LetterCity[i]] = [];
-        }
-        data.forEach((item, idx) => {
-          let letter = item.pinyinFull.slice(0, 1).toUpperCase();
-          citys[letter].push(item);
-        })
-        console.log(citys);
-      }
     },
     components: {
-      search
+      search,
+      city
     }
   }
 </script>
 
 <style lang="stylus" rel="stylesheet/stylus" type="text/stylus" scoped>
-  @import "~@/common/style/mixin.styl"
   .citylist_box {
     background-color: #F4F9F7
     .citylist_box_nav {
@@ -89,20 +56,6 @@
         transform translateY(-50%)
         .icon-zuoyoujiantou1 {
           font-size 50px
-        }
-      }
-    }
-    .city {
-      padding 0 25px
-      background-color: #fff
-      .current_city {
-        padding 25px 0 25px 10px
-        color #787878
-        font-size 30px
-        border-bottom-1px(#D9D9D9)
-        .current_city_txt {
-          color #333
-          margin-left 20px
         }
       }
     }
