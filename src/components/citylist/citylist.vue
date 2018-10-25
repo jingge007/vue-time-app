@@ -6,8 +6,8 @@
         <i class="iconfont icon-zuoyoujiantou1"></i>
       </span>
     </div>
-    <search></search>
-    <city></city>
+    <search @talg="talgBtn"></search>
+    <city :letter="talg_letter"></city>
   </div>
 </template>
 
@@ -18,7 +18,9 @@
 
   export default {
     data() {
-      return {}
+      return {
+        talg_letter: true
+      }
     },
     methods: {
       ...mapMutations({
@@ -30,6 +32,9 @@
         this.set_footer_talg(talg);
         this.$router.back(-1);
       },
+      talgBtn(talg) {
+        this.talg_letter = talg
+      }
     },
     components: {
       search,

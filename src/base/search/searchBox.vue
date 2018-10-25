@@ -1,6 +1,6 @@
 <template>
   <div class="search_box">
-    <input type="text" class="search_input" :placeholder='placeholder'>
+    <input type="text" class="search_input" :placeholder='placeholder' @focus="focusBtn" @blur="blurBtn">
     <i class="iconfont icon-sousuo"></i>
     <span class="search_txt" v-text="searchBtn"></span>
   </div>
@@ -20,7 +20,19 @@
     },
     data() {
       return {
-        talg: false
+        talg: true
+      }
+    },
+    methods: {
+      // 获取焦点
+      focusBtn() {
+        this.talg = false
+        this.$emit('talg', this.talg)
+      },
+      // 失去焦点
+      blurBtn() {
+        this.talg = true
+        this.$emit('talg', this.talg)
       }
     }
   }
@@ -40,7 +52,7 @@
       border-radius 10px
       outline none
       padding-left 70px
-      color #ccc
+      color #333
       font-size 32px
       flex 1
       ::-webkit-input-placeholder {

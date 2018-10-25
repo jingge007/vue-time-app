@@ -14,18 +14,19 @@
           <span class="city_item" v-for="(name,index) in item.list" :key="index">{{name.n}}</span>
         </div>
       </div>
-      <!--滚动固定标题的实现-->
-      <div class="list-fixed" ref="fixedBox" v-show="fixedTitle">
-        <h1 class="fixed-title" ref="colorTitle">{{fixedTitle}}</h1>
-      </div>
     </div>
     <!--右边的城市字母列表-->
-    <div class="letter_box" @touchstart="onShortcutTouchstart" @touchmove.stop.prevent="onShortcutTouchmove">
+    <div class="letter_box" @touchstart="onShortcutTouchstart" @touchmove.stop.prevent="onShortcutTouchmove" v-show="letter">
       <span class="letter_item" v-for="(item,index) in LetterCity"
             :key="index"
             :data-index="index"
             :class="{'selectLetter':currentIndex === index}"
       >{{item}}</span>
+    </div>
+
+    <!--滚动固定标题的实现-->
+    <div class="list-fixed" ref="fixedBox" v-show="fixedTitle">
+      <h1 class="fixed-title" ref="colorTitle">{{fixedTitle}}</h1>
     </div>
   </scroll>
 </template>
@@ -36,9 +37,15 @@
   import scroll from 'base/scroll/scroll'
   import {myDOM} from 'common/js/public_time'
 
-  const title_height = 50      // 滚动规定的标题的高度
-  const letter_height = 40     // 右边栏每个字母的高度
+  const TITLE_HEIGHT = 25      // 滚动规定的标题的高度
+  const LETTER_HEIGHT = 40     // 右边栏每个字母的高度
   export default {
+    props: {
+      letter: {
+        type: Boolean,
+        default: true
+      }
+    },
     data() {
       return {
         currentIndex: 0,
@@ -46,14 +53,14 @@
         diff: -1,
         cityList: [],
         hotCity: {},
-        LetterCity: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'W', 'X', 'Y', 'Z'],
-        probeType: 3,
-        listenScroll: true,
-        cityHeight: [],
-        touch: {}
+        LetterCity: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'W', 'X', 'Y', 'Z']
       }
     },
     created() {
+      this.probeType = 3
+      this.listenScroll = true
+      this.cityHeight = []
+      this.touch = {}
       this._getCity()
     },
     computed: {
@@ -91,22 +98,18 @@
             list: citys[k]
           }
           this.cityList.push(item);
-          console.log(this.cityList);
         }
       },
       // 计算城市列表的高度
       caclHeight() {
         let height = 0;
-        let totalHeight = 0;
         this.cityHeight = [];
-        this.cityHeight.push(totalHeight)
+        this.cityHeight.push(height)
         let list = this.$refs.city_list
-        // let currentHeight = this.$refs.current.clientHeight
-        // let hotHeight = this.$refs.hot_city.clientHeight
-        // this.cityHeight.push(currentHeight, hotHeight)
         for (let i = 0; i < list.length; i++) {
           height += list[i].clientHeight
           this.cityHeight.push(height)
+          console.log(this.cityHeight)
         }
       },
       scroll(pos) {
@@ -128,7 +131,7 @@
         let newTouch = e.touches[0]
         this.touch.y2 = newTouch.pageY
         // 两次touch y轴的偏移
-        let offset = Math.floor((this.touch.y2 - this.touch.y1) / letter_height)
+        let offset = Math.floor((this.touch.y2 - this.touch.y1) / LETTER_HEIGHT)
         let nowIndex = Number(this.touch.nowIndex) + offset
         this._scrollTo(nowIndex)
       },
@@ -156,7 +159,7 @@
       scrollY(newY) {
         const cityHeight = this.cityHeight
         // 当滚动到顶部时，newY>0
-        if (newY > 0) {
+        if (newY >= 0) {
           this.currentIndex = 0
           return
         }
@@ -166,7 +169,7 @@
           let height2 = cityHeight[i + 1]
           if (-newY > height1 && -newY < height2) {    // 因为是向下滑动所以newY是负值
             this.currentIndex = i
-            this.diff = height2 + newY                // 两个字母标题栏之间的距离
+            this.diff = Math.floor(height2 + newY)               // 两个字母标题栏之间的距离
             return
           }
         }
@@ -174,13 +177,13 @@
         this.currentIndex = cityHeight.length - 2
       },
       diff(newVal) {
-        let fixedTop = (newVal > 0 && newVal < title_height) ? newVal - title_height : 0
+        let fixedTop = (newVal > 0 && newVal < TITLE_HEIGHT) ? newVal - TITLE_HEIGHT : 0
         if (this.fixedTop === fixedTop) {
           return
         }
         this.fixedTop = fixedTop
         this.$refs.fixedBox.style.transform = `translate3d(0,${fixedTop}px,0)`
-        this.$refs.colorTitle.style.color = '#FFCD32'
+       // this.$refs.colorTitle.style.color = '#FFCD32'
       }
     },
     components: {
@@ -209,22 +212,6 @@
     }
     .cityBox {
       position: relative
-      .list-fixed {
-        display: none
-        position: absolute
-        top: 185px
-        left: 0
-        width: 100%
-        .fixed-title {
-          padding-left 20px
-          display: flex
-          align-items center
-          height: 50px
-          color #000
-          font-size 30px
-          background-color: #D6DBD9
-        }
-      }
       .city_list {
         .city_list_name {
           display: flex
@@ -264,6 +251,21 @@
       }
       .selectLetter {
         color #F97F41
+      }
+    }
+    .list-fixed {
+      position: absolute
+      top: -2px
+      left: 0
+      width: 100%
+      .fixed-title {
+        padding-left 20px
+        display: flex
+        align-items center
+        height: 50px
+        color #000
+        font-size 30px
+        background-color: #D6DBD9
       }
     }
   }
