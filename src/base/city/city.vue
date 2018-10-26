@@ -11,7 +11,7 @@
       <div class="city_list" ref="city_list" v-for="item in cityList">
         <h2 class="city_title">{{item.title}}</h2>
         <div class="city_list_name">
-          <span class="city_item" v-for="(name,index) in item.list" :key="index">{{name.n}}</span>
+          <span class="city_item" v-for="(name,index) in item.list" :key="index" @click="selectCity(name)">{{name.n}}</span>
         </div>
       </div>
     </div>
@@ -23,7 +23,12 @@
             :class="{'selectLetter':currentIndex === index}"
       >{{item}}</span>
     </div>
-
+    <!--返回顶部-->
+    <div class="toTop" @click="backtop" v-show="is_top">
+      <i class="iconfont icon-fanhuidingbu"></i>
+    </div>
+    <!--加载动画-->
+    <loading v-show="!cityList.length"></loading>
     <!--滚动固定标题的实现-->
     <div class="list-fixed" ref="fixedBox" v-show="fixedTitle">
       <h1 class="fixed-title" ref="colorTitle">{{fixedTitle}}</h1>
@@ -33,9 +38,10 @@
 
 <script type="text/ecmascript-6">
   import {mapMutations, mapGetters} from 'vuex'
-  import {getCity} from 'api/selling_tickets'
+  import {getCity} from 'api/mtime_data'
   import scroll from 'base/scroll/scroll'
   import {myDOM} from 'common/js/public_time'
+  import loading from 'base/loading/loading'
 
   const TITLE_HEIGHT = 25      // 滚动规定的标题的高度
   const LETTER_HEIGHT = 40     // 右边栏每个字母的高度
@@ -48,6 +54,7 @@
     },
     data() {
       return {
+        is_top: false,
         currentIndex: 0,
         scrollY: -1,
         diff: -1,
@@ -64,9 +71,6 @@
       this._getCity()
     },
     computed: {
-      ...mapGetters({
-        current_city: 'cityName'
-      }),
       fixedTitle() {
         if (this.scrollY > 0) {
           return ''
@@ -75,6 +79,21 @@
       }
     },
     methods: {
+      // 返回顶部
+      backtop() {
+        this.$refs.city.scrollTo(0, 0, 800)
+      },
+      ...mapMutations({
+        cityData: 'SET_CITY_DATA',
+        set_footer_talg: 'SET_FOOTER_TALG'
+      }),
+      // 派发选中城市的数据
+      selectCity(city) {
+        this.cityData(city)
+        let talg = true
+        this.set_footer_talg(talg)
+        this.$router.push('/time')
+      },
       // 获取城市列表的数据
       _getCity() {
         getCity().then((res) => {
@@ -109,7 +128,6 @@
         for (let i = 0; i < list.length; i++) {
           height += list[i].clientHeight
           this.cityHeight.push(height)
-          console.log(this.cityHeight)
         }
       },
       scroll(pos) {
@@ -161,6 +179,7 @@
         // 当滚动到顶部时，newY>0
         if (newY >= 0) {
           this.currentIndex = 0
+          this.is_top = false
           return
         }
         // 在中间部分滚动
@@ -170,6 +189,9 @@
           if (-newY > height1 && -newY < height2) {    // 因为是向下滑动所以newY是负值
             this.currentIndex = i
             this.diff = Math.floor(height2 + newY)               // 两个字母标题栏之间的距离
+            if (-newY > cityHeight[1]) {
+              this.is_top = true
+            }
             return
           }
         }
@@ -183,11 +205,12 @@
         }
         this.fixedTop = fixedTop
         this.$refs.fixedBox.style.transform = `translate3d(0,${fixedTop}px,0)`
-       // this.$refs.colorTitle.style.color = '#FFCD32'
+        // this.$refs.colorTitle.style.color = '#FFCD32'
       }
     },
     components: {
-      scroll
+      scroll,
+      loading
     }
   }
 </script>
@@ -266,6 +289,16 @@
         color #000
         font-size 30px
         background-color: #D6DBD9
+      }
+    }
+    .toTop {
+      position: fixed
+      bottom 80px
+      right 50px
+      z-index: 500
+      .iconfont {
+        font-size 80px
+        color #F9A340
       }
     }
   }

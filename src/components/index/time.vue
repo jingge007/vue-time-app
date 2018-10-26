@@ -25,7 +25,7 @@
 <script type="text/ecmascript-6">
   import swiperBox from 'base/swiper/swiper'
   import getCityName from 'common/js/getUserLocation'
-  import {getTickets, getIndex} from 'api/selling_tickets'
+  import {getTickets, getIndex} from 'api/mtime_data'
   import {STATUS} from 'api/config_status'
   import {mapGetters, mapMutations} from 'vuex'
 
@@ -33,6 +33,8 @@
     data() {
       return {
         ticketsData: [],
+        city_id: null,
+        cityName: ''
       }
     },
     mounted() {
@@ -44,14 +46,17 @@
     },
     computed: {
       ...mapGetters({
-        cityName: 'cityName'
+        cityData: 'cityData'
       })
     },
     methods: {
       // 获取热映购票的数据
       _getTickets() {
-        getTickets().then((res) => {
-          // console.log(res);
+        // 当前的城市
+        if (this.cityName == '深圳') {
+          this.city_id = 366;
+        }
+        getTickets(this.city_id).then((res) => {
           if (res.status == STATUS) {
             this.ticketsData = res.data.movies;
           }
@@ -60,19 +65,21 @@
       // 获取首页的数据
       _getIndex() {
         getIndex().then((res) => {
-          console.log(res);
+          // console.log(res);
         })
       },
       ...mapMutations({
-        set_city_name: 'SET_CITY_NAME',
         set_footer_talg: 'SET_FOOTER_TALG'
       }),
       // 获取当前的城市
       _getCityName() {
-        getCityName().then((city) => {
-          let name = city.slice(0, 2);
-          this.set_city_name(name);
-        })
+        if (Object.keys(this.cityData).length != 0) {
+          this.cityName = this.cityData.n
+        } else {
+          getCityName().then((city) => {
+            this.cityName = city.slice(0, 2);
+          })
+        }
       },
       // 点击进入选择城市列表页
       getCity() {
@@ -83,7 +90,7 @@
     },
     watch: {
       ticketsData() {
-        //  console.log(this.ticketsData);
+        console.log(this.ticketsData);
       }
     },
     components: {

@@ -1,6 +1,6 @@
 <template>
   <div class="search_box">
-    <input type="text" class="search_input" :placeholder='placeholder' @focus="focusBtn" @blur="blurBtn">
+    <input type="text" class="search_input" v-model="keyword" :placeholder='placeholder' @focus="focusBtn" @blur="blurBtn">
     <i class="iconfont icon-sousuo"></i>
     <span class="search_txt" v-text="searchBtn"></span>
   </div>
@@ -20,7 +20,8 @@
     },
     data() {
       return {
-        talg: true
+        talg: true,
+        keyword: ''
       }
     },
     methods: {
@@ -33,6 +34,13 @@
       blurBtn() {
         this.talg = true
         this.$emit('talg', this.talg)
+      }
+    },
+    watch: {
+      keyword() {
+        if (this.keyword != '') {
+          this.set_keyword(this.keyword);
+        }
       }
     }
   }

@@ -1,14 +1,13 @@
 import axios from 'axios'
 
 const API_PROXY = 'https://bird.ioliu.cn/v1/?url=https://api-m.mtime.cn'
-const API_TIME = 'https://bird.ioliu.cn/v1/?url=https://m.mtime.cn'
+const API_TIME = 'https://bird.ioliu.cn/v1/?url=http://m.mtime.cn'
 
 // 获取热映购票的数据
 export function getTickets(id) {
   const url = '/PageSubArea/HotPlayMovies.api';
   const data = Object.assign({}, {
-    locationId: 290,
-    count: 100
+    locationId: id
   })
   return axios.get(API_PROXY + url, {
     params: data

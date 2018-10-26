@@ -43,9 +43,9 @@ if (window.localStorage.getItem('user')) {
   store.commit(types.SET_FOOTER_TALG, item.talg);
 }
 
-if (window.localStorage.getItem('city')) {
-  let item = JSON.parse(window.localStorage.getItem('city'));
-  store.commit(types.SET_CITY_NAME, item);
+if (window.localStorage.getItem('cityData')) {
+  let item = JSON.parse(window.localStorage.getItem('cityData'));
+  store.commit(types.SET_CITY_DATA, item);
 }
 
 

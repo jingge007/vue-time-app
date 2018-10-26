@@ -1,19 +1,22 @@
 <template>
-  <div class="citylist_box">
-    <div class="citylist_box_nav">
-      选择城市
-      <span class="back" @click="back">
+  <animation>
+    <div class="citylist_box">
+      <div class="citylist_box_nav">
+        选择城市
+        <span class="back" @click="back">
         <i class="iconfont icon-zuoyoujiantou1"></i>
       </span>
+      </div>
+      <search @talg="talgBtn"></search>
+      <city :letter="talg_letter"></city>
     </div>
-    <search @talg="talgBtn"></search>
-    <city :letter="talg_letter"></city>
-  </div>
+  </animation>
 </template>
 
 <script type="text/ecmascript-6">
   import search from 'base/search/searchBox'
   import city from 'base/city/city'
+  import animation from 'base/returnAnimation/returnAnimation'
   import {mapMutations} from 'vuex'
 
   export default {
@@ -38,7 +41,8 @@
     },
     components: {
       search,
-      city
+      city,
+      animation
     }
   }
 </script>
@@ -46,6 +50,7 @@
 <style lang="stylus" rel="stylesheet/stylus" type="text/stylus" scoped>
   .citylist_box {
     background-color: #F4F9F7
+    z-index 9000
     .citylist_box_nav {
       position: relative
       text-align: center
