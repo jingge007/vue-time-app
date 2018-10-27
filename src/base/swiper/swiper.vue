@@ -1,6 +1,6 @@
 <template>
   <div class="swiper_box">
-    <swiper :options="swiperOption" ref="mySwiper">
+    <swiper :options="swiperOption" ref="mySwiper" v-if="Img_data.length">
       <swiper-slide v-for="(item,index) in Img_data" :key="index">
         <img class="swiper_img" :src="item.img" alt="">
       </swiper-slide>
@@ -10,22 +10,20 @@
 </template>
 
 <script type="text/ecmascript-6">
+  import {getSwiper} from 'api/mtime_data'
+  import {STATUS} from 'api/config_status'
+
   export default {
     data() {
       return {
-        Img_data: [
-          {img: require('../../common/images/swiper_01.jpg')},
-          {img: require('../../common/images/swiper_02.jpg')},
-          {img: require('../../common/images/swiper_03.jpg')},
-          {img: require('../../common/images/swiper_04.jpg')},
-          {img: require('../../common/images/swiper_05.jpg')}
-        ],
+        Img_data: [],
         swiperOption: {
           notNextTick: true,      //循环播放
           loop: true,
           initialSlide: 0,       //设定初始化时slide的索引
           autoplay: {
             delay: 3000,
+            disableOnInteraction: false
           },
           effect: 'slide',       // 设置轮播切换效果
           speed: 800,           //滑动速度
@@ -35,6 +33,18 @@
             el: '.swiper-pagination'
           }
         }
+      }
+    },
+    created() {
+      this._getSwiper()
+    },
+    methods: {
+      _getSwiper() {
+        getSwiper().then((res) => {
+          if (res.status == STATUS) {
+            this.Img_data = res.data.topPosters
+          }
+        })
       }
     }
   }
@@ -48,11 +58,13 @@
   .swiper_box /deep/ .swiper-pagination-bullet-active {
     background #fff
   }
+
   .swiper_box {
     width: 100%;
+    height: 394px
     .swiper_img {
       width: 100%;
-     // height: 500px
+      height: 100%
     }
   }
 </style>

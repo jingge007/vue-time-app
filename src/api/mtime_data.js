@@ -4,12 +4,12 @@ const API_PROXY = 'https://bird.ioliu.cn/v1/?url=https://api-m.mtime.cn'
 const API_TIME = 'https://bird.ioliu.cn/v1/?url=http://m.mtime.cn'
 
 // 获取热映购票的数据
-export function getTickets(id) {
-  const url = '/PageSubArea/HotPlayMovies.api';
+export function getIndex(id) {
+  const url = '/Service/callback.mi/Showtime/LocationMovies.api';
   const data = Object.assign({}, {
     locationId: id
   })
-  return axios.get(API_PROXY + url, {
+  return axios.get(url, {
     params: data
   }).then((res) => {
     return Promise.resolve(res);
@@ -18,18 +18,13 @@ export function getTickets(id) {
   })
 }
 
-// 获取首页的数据
-export function getIndex() {
-  const url = '/Service/callback.mi/Showtime/LocationMovies.api';
-  const data = Object.assign({}, {
-    locationId: 290
-  })
-  return axios.get(API_TIME + url, {
-    params: data
-  }).then((res) => {
-    return Promise.resolve(res);
+// 获取轮播图的数据
+export function getSwiper() {
+  const url = '/Service/callback.mi/PageSubArea/GetFirstPageAdvAndNews.api'
+  return axios.get(url).then((res) => {
+    return Promise.resolve(res)
   }).catch((err) => {
-    console.log(err);
+    console.log(err)
   })
 }
 
