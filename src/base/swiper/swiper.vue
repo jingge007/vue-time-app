@@ -2,7 +2,9 @@
   <div class="swiper_box">
     <swiper :options="swiperOption" ref="mySwiper" v-if="Img_data.length">
       <swiper-slide v-for="(item,index) in Img_data" :key="index">
-        <img class="swiper_img" :src="item.img" alt="">
+        <a :href="item.url">
+          <img class="swiper_img" :src="item.img" alt="">
+        </a>
       </swiper-slide>
       <div class="swiper-pagination " slot="pagination"></div>
     </swiper>
@@ -45,6 +47,9 @@
             this.Img_data = res.data.topPosters
           }
         })
+      },
+      imgBtn(data) {
+        console.log(data)
       }
     }
   }
