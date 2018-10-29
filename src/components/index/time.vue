@@ -22,6 +22,8 @@
               <img :src="item.img" alt="">
               <span class="score" v-show="item.r>0">{{item.r}}</span>
               <div class="isNew" v-show="item.isNew">最新</div>
+              <h2 class="movie_title">{{item.tCn}}</h2>
+              <span class="ticket_btn">购票</span>
             </div>
           </div>
         </scroll>
@@ -115,6 +117,7 @@
 </script>
 
 <style lang="stylus" rel="stylesheet/stylus" type="text/stylus" scoped>
+  @import "~@/common/style/mixin.styl"
   .time_index {
     width: 100%
     height: 100%
@@ -157,14 +160,14 @@
           align-items center
           .swiper_item {
             width: 220px
-            height: 320px
             border-radius 10px
             margin-right 14px
             overflow: hidden
             position: relative
             img {
               width: 100%
-              height: 100%
+              height: 320px
+              border-radius 10px
             }
             .score {
               font-size 24px
@@ -176,7 +179,7 @@
               line-height: 52px
               text-align: center
               position: absolute
-              bottom 0
+              top: 270px
               right: 0
               z-index 100
             }
@@ -193,6 +196,25 @@
               line-height: 55px
               -webkit-clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 80%, 0 100%);
               clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 80%, 0 100%);
+            }
+            .movie_title {
+              text-align: center
+              margin 15px auto
+              color #333
+              font-size 28px
+              no-wrap()
+            }
+            .ticket_btn {
+              display: block
+              width: 100px
+              height: 50px
+              border-radius 50px
+              color #ffffff
+              font-size 28px
+              margin 0 auto
+              line-height: 50px
+              text-align: center
+              background-image: -webkit-linear-gradient(0deg, #FFA042, #F1792F)
             }
           }
           .swiper_item:last-child {
