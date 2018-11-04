@@ -39,7 +39,7 @@
     watch: {
       keyword() {
         if (this.keyword != '') {
-          this.set_keyword(this.keyword);
+          this.$emit('set_keyword', this.keyword)
         }
       }
     }

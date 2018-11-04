@@ -50,6 +50,10 @@
       letter: {
         type: Boolean,
         default: true
+      },
+      cityWord: {
+        type: String,
+        default: ''
       }
     },
     data() {
@@ -77,6 +81,7 @@
         }
         return this.LetterCity[this.currentIndex] ? this.LetterCity[this.currentIndex] : ''
       }
+
     },
     methods: {
       // 返回顶部
@@ -172,6 +177,9 @@
         setTimeout(() => {
           this.caclHeight();
         }, 20)
+      },
+      cityWord() {
+        console.log(this.cityWord)
       },
       // 监听 scrollY 落在 cityHeight 的哪个区间，实现高亮联动
       scrollY(newY) {

@@ -7,8 +7,8 @@
         <i class="iconfont icon-zuoyoujiantou1"></i>
       </span>
       </div>
-      <search @talg="talgBtn"></search>
-      <city :letter="talg_letter"></city>
+      <search @talg="talgBtn" @set_keyword="set_keyword"></search>
+      <city :letter="talg_letter" :cityWord="cityWord"></city>
     </div>
   </animation>
 </template>
@@ -22,7 +22,8 @@
   export default {
     data() {
       return {
-        talg_letter: true
+        talg_letter: true,
+        cityWord: ''
       }
     },
     methods: {
@@ -37,6 +38,10 @@
       },
       talgBtn(talg) {
         this.talg_letter = talg
+      },
+      // 搜索城市名称
+      set_keyword(word) {
+        this.cityWord = word
       }
     },
     components: {

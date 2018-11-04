@@ -28,6 +28,8 @@
           </div>
         </scroll>
       </div>
+      <!--新闻列表-->
+      <newlist></newlist>
     </div>
   </div>
 </template>
@@ -39,6 +41,7 @@
   import {STATUS} from 'api/config_status'
   import {mapGetters, mapMutations} from 'vuex'
   import scroll from 'base/scroll/scroll'
+  import newlist from 'base/newList/newList'
 
   export default {
     data() {
@@ -111,7 +114,8 @@
     },
     components: {
       swiperBox,
-      scroll
+      scroll,
+      newlist
     }
   }
 </script>
