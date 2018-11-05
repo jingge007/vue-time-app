@@ -1,39 +1,51 @@
 <template>
-  <scroll class="city"
-          ref="city"
-          :data="cityList"
-          :probeType="probeType"
-          @scroll="scroll"
-          :listenScroll="listenScroll"
-  >
-    <div class="cityBox">
-      <!--城市列表-->
-      <div class="city_list" ref="city_list" v-for="item in cityList">
-        <h2 class="city_title">{{item.title}}</h2>
-        <div class="city_list_name">
-          <span class="city_item" v-for="(name,index) in item.list" :key="index" @click="selectCity(name)">{{name.n}}</span>
+  <div>
+    <scroll class="city"
+            ref="city"
+            :data="cityList"
+            :probeType="probeType"
+            @scroll="scroll"
+            :listenScroll="listenScroll"
+            v-show="talg_city"
+    >
+      <div class="cityBox">
+        <!--城市列表-->
+        <div class="city_list" ref="city_list" v-for="item in cityList">
+          <h2 class="city_title">{{item.title}}</h2>
+          <div class="city_list_name">
+            <span class="city_item" v-for="(name,index) in item.list" :key="index" @click="selectCity(name)">{{name.n}}</span>
+          </div>
         </div>
       </div>
-    </div>
-    <!--右边的城市字母列表-->
-    <div class="letter_box" @touchstart="onShortcutTouchstart" @touchmove.stop.prevent="onShortcutTouchmove" v-show="letter">
+      <!--右边的城市字母列表-->
+      <div class="letter_box" @touchstart="onShortcutTouchstart" @touchmove.stop.prevent="onShortcutTouchmove" v-show="letter">
       <span class="letter_item" v-for="(item,index) in LetterCity"
             :key="index"
             :data-index="index"
             :class="{'selectLetter':currentIndex === index}"
       >{{item}}</span>
-    </div>
-    <!--返回顶部-->
-    <div class="toTop" @click="backtop" v-show="is_top">
-      <i class="iconfont icon-fanhuidingbu"></i>
-    </div>
-    <!--加载动画-->
-    <loading v-show="!cityList.length"></loading>
-    <!--滚动固定标题的实现-->
-    <div class="list-fixed" ref="fixedBox" v-show="fixedTitle">
-      <h1 class="fixed-title" ref="colorTitle">{{fixedTitle}}</h1>
-    </div>
-  </scroll>
+      </div>
+      <!--返回顶部-->
+      <div class="toTop" @click="backtop" v-show="is_top">
+        <i class="iconfont icon-fanhuidingbu"></i>
+      </div>
+      <!--加载动画-->
+      <loading v-show="!cityList.length"></loading>
+      <!--滚动固定标题的实现-->
+      <div class="list-fixed" ref="fixedBox" v-show="fixedTitle">
+        <h1 class="fixed-title" ref="colorTitle">{{fixedTitle}}</h1>
+      </div>
+    </scroll>
+    <scroll class="search_city"
+            :data="search_city"
+            v-show="!talg_city"
+    >
+      <div class="search_city_box">
+        <span class="search_city_item" v-for="(name,index) in filtereCity" :key="index" @click="selectCity(name)">{{name.n}}</span>
+        <div v-show="is_talg_city" class="is_city">当前搜索无此城市</div>
+      </div>
+    </scroll>
+  </div>
 </template>
 
 <script type="text/ecmascript-6">
@@ -63,7 +75,10 @@
         scrollY: -1,
         diff: -1,
         cityList: [],
+        search_city: [],
         hotCity: {},
+        talg_city: true,
+        is_talg_city: false,
         LetterCity: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'W', 'X', 'Y', 'Z']
       }
     },
@@ -80,8 +95,13 @@
           return ''
         }
         return this.LetterCity[this.currentIndex] ? this.LetterCity[this.currentIndex] : ''
-      }
-
+      },
+      // 搜索城市名称
+      filtereCity() {
+        return this.search_city.filter(post => {
+          return post.n.toLowerCase().includes(this.cityWord.toLowerCase())
+        })
+      },
     },
     methods: {
       // 返回顶部
@@ -104,24 +124,27 @@
         getCity().then((res) => {
           let city = res.data.p;
           this.handleCity(city);
+          this.search_city = city;
         })
       },
       // 处理城市列表的数据
       handleCity(data) {
-        let citys = {};
-        for (let i = 0; i < this.LetterCity.length; i++) {
-          citys[this.LetterCity[i]] = [];
-        }
-        data.forEach((item, idx) => {
-          let letter = item.pinyinFull.slice(0, 1).toUpperCase();
-          citys[letter].push(item);
-        })
-        for (let k in citys) {
-          let item = {
-            title: k,
-            list: citys[k]
+        if (data) {
+          let citys = {};
+          for (let i = 0; i < this.LetterCity.length; i++) {
+            citys[this.LetterCity[i]] = [];
           }
-          this.cityList.push(item);
+          data.forEach((item, idx) => {
+            let letter = item.pinyinFull.slice(0, 1).toUpperCase();
+            citys[letter].push(item);
+          })
+          for (let k in citys) {
+            let item = {
+              title: k,
+              list: citys[k]
+            }
+            this.cityList.push(item);
+          }
         }
       },
       // 计算城市列表的高度
@@ -179,7 +202,20 @@
         }, 20)
       },
       cityWord() {
-        console.log(this.cityWord)
+        if (this.cityWord != '') {
+          this.talg_city = false;
+        }
+        else {
+          this.talg_city = true;
+        }
+      },
+      filtereCity() {
+        if (this.filtereCity.length > 0) {
+          this.is_talg_city = false;
+        }
+        else {
+          this.is_talg_city = true;
+        }
       },
       // 监听 scrollY 落在 cityHeight 的哪个区间，实现高亮联动
       scrollY(newY) {
@@ -225,7 +261,7 @@
 
 <style lang="stylus" rel="stylesheet/stylus" type="text/stylus" scoped>
   @import "~@/common/style/mixin.styl"
-  .city {
+  .city, .search_city {
     background-color: #fff
     position: fixed
     top: 185px
@@ -307,6 +343,20 @@
       .iconfont {
         font-size 80px
         color #F9A340
+      }
+    }
+    .search_city_box {
+      width: 100%;
+      color #333
+      font-size 30px
+      .search_city_item {
+        display: block
+        padding 20px 0 20px 40px
+        border-bottom-1px(#D6D6D6)
+      }
+      .is_city {
+        text-align center
+        padding-top 20px
       }
     }
   }

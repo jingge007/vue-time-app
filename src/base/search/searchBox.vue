@@ -2,7 +2,7 @@
   <div class="search_box">
     <input type="text" class="search_input" v-model="keyword" :placeholder='placeholder' @focus="focusBtn" @blur="blurBtn">
     <i class="iconfont icon-sousuo"></i>
-    <span class="search_txt" v-text="searchBtn"></span>
+    <span class="search_txt" v-text="searchBtn" @click="cancelBtn"></span>
   </div>
 </template>
 
@@ -34,13 +34,15 @@
       blurBtn() {
         this.talg = true
         this.$emit('talg', this.talg)
+      },
+      // 取消按钮
+      cancelBtn() {
+        this.keyword = '';
       }
     },
     watch: {
       keyword() {
-        if (this.keyword != '') {
-          this.$emit('set_keyword', this.keyword)
-        }
+        this.$emit('set_keyword', this.keyword)
       }
     }
   }

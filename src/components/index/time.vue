@@ -1,231 +1,103 @@
 <template>
   <div class="time_index">
-    <!--轮播图-->
-    <swiper-box></swiper-box>
-    <div class="time_content">
-      <!--热映购票-->
-      <div class="purchase_nav">
-        <div class="purchase_nav_left">
-          <span class="txt">热映购票·</span>
-          <span @click="getCity">{{cityName}}</span>
-          <i class="iconfont icon-down_arrow"></i>
+    <scroll :data="newsList"
+            :probeType="probeType"
+            :listenScroll="listenScroll"
+            class="list_scroll"
+    >
+      <div>
+        <!--搜索框-->
+        <div class="search">
+          <i class="iconfont icon-sousuo"></i>
+          <p class="search_item">影片/影院/影人，任你搜...</p>
         </div>
-        <div class="purchase_nav_right">
-          <span>{{ticketsData.length+'部'}}</span>
-          <i class="iconfont icon-zuoyoujiantou"></i>
-        </div>
+        <!--轮播图-->
+        <swiper-box></swiper-box>
+        <!--热映购票-->
+        <ticket></ticket>
+        <!--新闻列表-->
+        <newlist></newlist>
       </div>
-      <div class="cross_swiper">
-        <scroll :scrollX="this.scrollX" :eventPassthrough="this.eventPassthrough" ref="scroll" :click="this.click">
-          <div ref="img_box" class="swiper_box">
-            <div class="swiper_item" v-if="hotTicketData.length" v-for="(item,index) in hotTicketData" :key="index">
-              <img :src="item.img" alt="">
-              <span class="score" v-show="item.r>0">{{item.r}}</span>
-              <div class="isNew" v-show="item.isNew">最新</div>
-              <h2 class="movie_title">{{item.tCn}}</h2>
-              <span class="ticket_btn">购票</span>
-            </div>
-          </div>
-        </scroll>
-      </div>
-      <!--新闻列表-->
-      <newlist></newlist>
-    </div>
+    </scroll>
   </div>
+
+
 </template>
 
 <script type="text/ecmascript-6">
   import swiperBox from 'base/swiper/swiper'
-  import getCityName from 'common/js/getUserLocation'
-  import {getIndex} from 'api/mtime_data'
-  import {STATUS} from 'api/config_status'
-  import {mapGetters, mapMutations} from 'vuex'
-  import scroll from 'base/scroll/scroll'
   import newlist from 'base/newList/newList'
+  import ticket from 'components/TicketPurchase/TicketPurchase'
+  import scroll from 'base/scroll/scroll'
+  import {getNew} from 'api/mtime_data'
+  import {STATUS} from 'api/config_status'
 
   export default {
     data() {
       return {
-        ticketsData: [],
-        cityName: '',
-        hotTicketData: [],
-        eventPassthrough: 'vertical',           // 忽略better-scroll垂直滚动的方向
-        scrollX: true,
-        click: false
+        newsList: [],
+        probeType: 3,
+        listenScroll: true,
       }
-    },
-    mounted() {
-      this.$refs.scroll.refresh()
     },
     created() {
-      this._getIndex();
-
-    },
-    computed: {
-      ...mapGetters({
-        cityData: 'cityData'
-      })
+      this._getNew()
     },
     methods: {
-      // 获取热映购票的数据
-      _getIndex() {
-        let city_id = null;
-        if (Object.keys(this.cityData).length != 0) {
-          this.cityName = this.cityData.n
-          city_id = this.cityData.id
-          getIndex(city_id).then((res) => {
-            if (res.status == STATUS) {
-              this.ticketsData = res.data.ms
-              this.hotTicketData = this.ticketsData.slice(0, 15)
-            }
-          })
-        } else {
-          // 获取当前城市
-          getCityName().then((city) => {
-            this.cityName = city.slice(0, 2);
-            city_id = 366;
-            getIndex(city_id).then((res) => {
-              if (res.status == STATUS) {
-                this.ticketsData = res.data.ms
-                this.hotTicketData = this.ticketsData.slice(0, 15)
-              }
-            })
-          })
-        }
+      _getNew() {
+        getNew().then((res) => {
+          if (res.status == STATUS) {
+            this.newsList = res.data.newsList;
+          }
+        })
       },
-      ...mapMutations({
-        set_footer_talg: 'SET_FOOTER_TALG'
-      }),
-      // 点击进入选择城市列表页
-      getCity() {
-        this.$router.push('/citylist');
-        let talg = false;
-        this.set_footer_talg(talg);
-      }
-    },
-    watch: {
-      ticketsData() {
-        // 计算左右滑动模块的宽度
-        let picWidth = 110
-        let margin = 7
-        let width = (picWidth + margin) * this.hotTicketData.length - margin
-        this.$refs.img_box.style.width = width + 'px'
-      }
     },
     components: {
       swiperBox,
-      scroll,
-      newlist
+      newlist,
+      ticket,
+      scroll
     }
   }
 </script>
 
 <style lang="stylus" rel="stylesheet/stylus" type="text/stylus" scoped>
-  @import "~@/common/style/mixin.styl"
   .time_index {
     width: 100%
-    height: 100%
     background-color: #fff
-    .time_content {
-      padding 0 20px
-      .purchase_nav {
-        display: flex
-        justify-content space-between
-        font-size 30px
-        color #9D9D9E
-        height: 60px
-        align-items center
-        .purchase_nav_left {
-          display: flex
-          align-items center
-          .txt {
-            color #333
-            font-weight 600
-          }
-          .icon-down_arrow {
-            font-size 40px
-          }
-        }
-        .purchase_nav_right {
-          display: flex
-          align-items center
-          .icon-zuoyoujiantou {
-            font-size 40px
-            padding-bottom 6px
-          }
-        }
-      }
-      .cross_swiper {
-        padding 15px 0 30px 0
+    position: fixed
+    top: 0
+    bottom: 110px
+    overflow: hidden
+    .list_scroll {
+      position: relative
+      height: 100%
+      overflow: hidden
+    }
+    .search {
+      padding 15px 30px
+      display: flex
+      align-items center
+      position: relative
+      background-color: #1D2634
+      .search_item {
+        background-color: #fff
+        height: 70px
+        line-height: 70px
+        border 1px solid #BDBDBD
+        border-radius 10px
+        padding-left 70px
+        color #A3A3A4
+        font-size 32px
         width: 100%
-        overflow: hidden
-        .swiper_box {
-          display: flex
-          align-items center
-          .swiper_item {
-            width: 220px
-            border-radius 10px
-            margin-right 14px
-            overflow: hidden
-            position: relative
-            img {
-              width: 100%
-              height: 320px
-              border-radius 10px
-            }
-            .score {
-              font-size 24px
-              color #ffffff
-              background-color: #8AC91E
-              border-radius 5px
-              width 50px
-              height: 50px
-              line-height: 52px
-              text-align: center
-              position: absolute
-              top: 270px
-              right: 0
-              z-index 100
-            }
-            .isNew {
-              position: absolute
-              top: 0
-              left: 10px
-              width: 45px
-              height: 55px
-              background-color: #F6A230
-              color #ffffff
-              font-size 18px
-              text-align: center
-              line-height: 55px
-              -webkit-clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 80%, 0 100%);
-              clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 80%, 0 100%);
-            }
-            .movie_title {
-              text-align: center
-              margin 15px auto
-              color #333
-              font-size 28px
-              no-wrap()
-            }
-            .ticket_btn {
-              display: block
-              width: 100px
-              height: 50px
-              border-radius 50px
-              color #ffffff
-              font-size 28px
-              margin 0 auto
-              line-height: 50px
-              text-align: center
-              background-image: -webkit-linear-gradient(0deg, #FFA042, #F1792F)
-            }
-          }
-          .swiper_item:last-child {
-            margin-right 0px !important
-          }
-        }
-
+      }
+      .icon-sousuo {
+        font-size 40px
+        position: absolute
+        top: 50%
+        left: 45px
+        transform translateY(-50%)
+        color #BEBEBE
       }
     }
   }

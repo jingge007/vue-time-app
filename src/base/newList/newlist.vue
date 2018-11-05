@@ -59,7 +59,7 @@
 <style lang="stylus" rel="stylesheet/stylus" type="text/stylus" scoped>
   @import "~@/common/style/mixin.styl"
   .newsList {
-    padding 0 5px
+    padding 0 20px
     .list_box {
       padding 30px 0 30px 0
       width: 100%
