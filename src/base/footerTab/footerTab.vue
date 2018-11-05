@@ -61,12 +61,13 @@
     display: flex
     justify-content: space-around
     align-items center
-    position: absolute
+    position: fixed
     bottom: 0
     left: 0
     z-index 9999
     font-size 28px
     color #666
+    background-color: #fff
     .router-link-active {
       color #F97F41 !important
       .iconfont_item {

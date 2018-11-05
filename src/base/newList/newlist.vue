@@ -2,8 +2,8 @@
   <div class="newsList">
     <ul>
       <li class="list_box" v-for="item in newsList">
-        <div class="list_img">
-          <img :src="item.image" alt="">
+        <div class="list_img" :style="{backgroundImage:'url(' + item.image + ')'}">
+          <!-- <img :src="item.image" alt="">-->
         </div>
         <div class="list_content">
           <h2 class="list_title">{{item.title}}</h2>
@@ -70,11 +70,13 @@
         height: 220px
         border-radius 5px
         margin-right 25px
+        background-size cover
+        background-position center
         overflow hidden
-        img {
+        /*img {
           width: 100%
           height: 100%
-        }
+        }*/
       }
       .list_content {
         flex 1
