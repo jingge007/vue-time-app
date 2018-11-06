@@ -1,6 +1,4 @@
-# vue-time-app
-
-> A Vue.js project
+# vue-time-app (vue时光网APP)
 
 ## Build Setup
 

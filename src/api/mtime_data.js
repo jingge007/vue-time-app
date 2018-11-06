@@ -32,7 +32,7 @@ export function getSwiper() {
 // 获取城市列表的数据
 export function getCity() {
   const url = '/Service/callback.mi/Showtime/HotCitiesByCinema.api';
-  return axios.get(API_TIME + url, {}).then((res) => {
+  return axios.get(url, {}).then((res) => {
     return Promise.resolve(res);
   }).catch((err) => {
     console.log(err);

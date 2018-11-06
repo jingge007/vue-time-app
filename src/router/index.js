@@ -14,15 +14,18 @@ const routes = [
   {
     path: '/',
     redirect: '/time',
-    component: time
+    component: time,
+    meta: {keepAlive: true}
   },
   {
     path: '/time',
-    component: time
+    component: time,
+    meta: {keepAlive: true}
   },
   {
     path: '/my_time',
-    component: myTime
+    component: myTime,
+    meta: {keepAlive: true}
   },
   {
     path: '/login',
@@ -33,7 +36,8 @@ const routes = [
   },
   {
     path: '/citylist',
-    component: citylist
+    component: citylist,
+    meta: {keepAlive: true}
   },
 ]
 
