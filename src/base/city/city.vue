@@ -252,6 +252,7 @@
         // this.$refs.colorTitle.style.color = '#FFCD32'
       }
     },
+
     components: {
       scroll,
       loading

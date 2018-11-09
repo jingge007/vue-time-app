@@ -29,8 +29,6 @@
   import newlist from 'base/newList/newList'
   import ticket from 'components/TicketPurchase/TicketPurchase'
   import scroll from 'base/scroll/scroll'
-  import {getNew} from 'api/mtime_data'
-  import {STATUS} from 'api/config_status'
 
   export default {
     data() {
@@ -41,16 +39,9 @@
       }
     },
     created() {
-      this._getNew()
+
     },
     methods: {
-      _getNew() {
-        getNew().then((res) => {
-          if (res.status == STATUS) {
-            this.newsList = res.data.newsList;
-          }
-        })
-      },
     },
     components: {
       swiperBox,
