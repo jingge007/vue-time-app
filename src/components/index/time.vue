@@ -4,6 +4,8 @@
             :probeType="probeType"
             :listenScroll="listenScroll"
             class="list_scroll"
+            :pullup="pullup"
+            @scrollToEnd="loadMore"
     >
       <div>
         <!--搜索框-->
@@ -16,7 +18,8 @@
         <!--热映购票-->
         <ticket></ticket>
         <!--新闻列表-->
-        <newlist></newlist>
+        <newlist :newsList="newsList"></newlist>
+        <loading :loadMore="more"></loading>
       </div>
     </scroll>
   </div>
@@ -29,25 +32,78 @@
   import newlist from 'base/newList/newList'
   import ticket from 'components/TicketPurchase/TicketPurchase'
   import scroll from 'base/scroll/scroll'
+  import {getNew} from 'api/mtime_data'
+  import {STATUS} from 'api/config_status'
+  import {timer} from 'common/js/public_time'
+  import loading from 'base/loading/loading'
 
   export default {
     data() {
       return {
+        more: true,
         newsList: [],
         probeType: 3,
         listenScroll: true,
+        loadingFlag: true,
+        moreData: true,
+        page: 1,
+        pullup: true,           // 支持上拉加载更多数据
       }
     },
     created() {
-
+      this._getNew();
     },
     methods: {
+      // 获取新闻列表的数据
+      _getNew() {
+        getNew(this.page).then((res) => {
+          if (res.status == STATUS) {
+            this.timeStamp(res.data.newsList)
+            console.log(res.data.pageCount)
+            console.log(res.data.totalCount)
+          }
+        })
+      },
+      // 对新闻列表时间戳的处理
+      timeStamp(data) {
+        data.forEach((item, idx) => {
+          if (item.publishTime) {
+            item['timer'] = timer.dateDiff(item.publishTime)
+          }
+        })
+        this.newsList = data;
+      },
+      // 加载更多的数据
+      loadMore() {
+        this.page += 1;
+        if (!this.loadingFlag) {
+          return
+        }
+        this.loadingFlag = false;
+        if (!this.moreData) {              // 当没有更多的数据的时候重置变量
+          this.loadingFlag = true;
+          return
+        }
+        getNew(this.page).then((res) => {
+          if (res.status == STATUS) {
+            let moreData = res.data.newsList;
+            moreData.forEach((item, idx) => {
+              if (item.publishTime) {
+                item['timer'] = timer.dateDiff(item.publishTime)
+              }
+            })
+            this.newsList = this.newsList.concat(moreData);
+            this.loadingFlag = true;
+          }
+        })
+      }
     },
     components: {
       swiperBox,
       newlist,
       ticket,
-      scroll
+      scroll,
+      loading
     }
   }
 </script>

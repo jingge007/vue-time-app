@@ -1,11 +1,31 @@
 <template>
-  <div class="loading">
-    <img src="../../assets/loading.gif" alt="">
+  <div>
+    <!--全面屏时加载的动画-->
+    <div class="loading" v-show="fullScreen">
+      <img src="../../assets/loading.gif" alt="">
+    </div>
+    <!--加载更多数据的动画-->
+    <div class="load_more" v-show="loadMore">
+      <img src="../../assets/loading.gif" class="more_img" alt="">
+      <span>正在加载...</span>
+    </div>
   </div>
+
 </template>
 
 <script type="text/ecmascript-6">
-  export default {}
+  export default {
+    props: {
+      fullScreen: {
+        type: Boolean,
+        default: false
+      },
+      loadMore: {
+        type: Boolean,
+        default: false
+      }
+    }
+  }
 </script>
 
 <style lang="stylus" rel="stylesheet/stylus" type="text/stylus" scoped>
@@ -19,6 +39,21 @@
       height: 200px
       display: block
     }
+  }
+
+  .load_more {
+    display: flex
+    align-items center
+    justify-content center
+    font-size 30px
+    text-align: center
+    color #333
+    .more_img {
+      width: 100px
+      height: 100px
+      display: inline-block
+    }
+
   }
 </style>
 

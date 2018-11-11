@@ -15,12 +15,12 @@ const routes = [
     path: '/',
     redirect: '/time',
     component: time,
-    meta: {keepAlive: true}
+   // meta: {keepAlive: true}
   },
   {
     path: '/time',
     component: time,
-    meta: {keepAlive: true}
+   // meta: {keepAlive: true}
   },
   {
     path: '/my_time',

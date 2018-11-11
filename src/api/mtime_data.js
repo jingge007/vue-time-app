@@ -43,7 +43,7 @@ export function getCity() {
 export function getNew(page) {
   const url = '/Service/callback.mi/News/NewsList.api';
   const data = Object.assign({}, {
-    pageIndex: 1
+    pageIndex: page
   })
   return axios.get((url), {
     params: data

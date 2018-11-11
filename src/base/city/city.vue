@@ -30,7 +30,7 @@
         <i class="iconfont icon-fanhuidingbu"></i>
       </div>
       <!--加载动画-->
-      <loading v-show="!cityList.length"></loading>
+      <loading v-show="!cityList.length" :fullScreen="fullScreen"></loading>
       <!--滚动固定标题的实现-->
       <div class="list-fixed" ref="fixedBox" v-show="fixedTitle">
         <h1 class="fixed-title" ref="colorTitle">{{fixedTitle}}</h1>
@@ -70,6 +70,7 @@
     },
     data() {
       return {
+        fullScreen: true,
         is_top: false,
         currentIndex: 0,
         scrollY: -1,

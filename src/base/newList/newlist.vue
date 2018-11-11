@@ -3,7 +3,6 @@
     <ul>
       <li class="list_box" v-for="item in newsList">
         <div class="list_img" :style="{backgroundImage:'url(' + item.image + ')'}">
-          <!-- <img :src="item.image" alt="">-->
         </div>
         <div class="list_content">
           <h2 class="list_title">{{item.title}}</h2>
@@ -19,40 +18,23 @@
 </template>
 
 <script type="text/ecmascript-6">
-  import {getNew} from 'api/mtime_data'
-  import {STATUS} from 'api/config_status'
-  import {timer} from 'common/js/public_time'
+
 
   export default {
+    props: {
+      newsList: {
+        type: Array,
+        default: []
+      }
+    },
     data() {
       return {
-        newsList: [],
+
       }
     },
     created() {
-      this._getNew();
     },
-    methods: {
-      // 获取新闻列表的数据
-      _getNew() {
-        getNew().then((res) => {
-          if (res.status == STATUS) {
-            // console.log(res.data)
-            this.timeStamp(res.data.newsList)
-          }
-        })
-      },
-      // 对新闻列表时间戳的处理
-      timeStamp(data) {
-        data.forEach((item, idx) => {
-          if (item.publishTime) {
-            item['timer'] = timer.dateDiff(item.publishTime)
-          }
-        })
-        this.newsList = data;
-        // console.log(this.newsList)
-      }
-    }
+    methods: {}
   }
 </script>
 
@@ -73,10 +55,6 @@
         background-size cover
         background-position center
         overflow hidden
-        /*img {
-          width: 100%
-          height: 100%
-        }*/
       }
       .list_content {
         flex 1
