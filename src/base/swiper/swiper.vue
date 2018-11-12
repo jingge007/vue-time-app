@@ -67,6 +67,7 @@
   .swiper_box {
     width: 100%;
     height: 394px
+    background-color: #F3F3F3
     .swiper_img {
       width: 100%;
       height: 100%

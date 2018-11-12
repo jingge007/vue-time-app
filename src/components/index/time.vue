@@ -19,7 +19,7 @@
         <ticket></ticket>
         <!--新闻列表-->
         <newlist :newsList="newsList"></newlist>
-        <loading :loadMore="more"></loading>
+        <loading :loadMore="moreData" v-show="newsList.length>0"></loading>
       </div>
     </scroll>
   </div>
@@ -40,7 +40,6 @@
   export default {
     data() {
       return {
-        more: true,
         newsList: [],
         probeType: 3,
         listenScroll: true,
@@ -59,8 +58,7 @@
         getNew(this.page).then((res) => {
           if (res.status == STATUS) {
             this.timeStamp(res.data.newsList)
-            console.log(res.data.pageCount)
-            console.log(res.data.totalCount)
+            this._checkMore(res.data);
           }
         })
       },
@@ -75,27 +73,33 @@
       },
       // 加载更多的数据
       loadMore() {
-        this.page += 1;
-        if (!this.loadingFlag) {
-          return
-        }
-        this.loadingFlag = false;
-        if (!this.moreData) {              // 当没有更多的数据的时候重置变量
-          this.loadingFlag = true;
-          return
-        }
-        getNew(this.page).then((res) => {
-          if (res.status == STATUS) {
-            let moreData = res.data.newsList;
-            moreData.forEach((item, idx) => {
-              if (item.publishTime) {
-                item['timer'] = timer.dateDiff(item.publishTime)
-              }
-            })
-            this.newsList = this.newsList.concat(moreData);
+        if (this.loadingFlag) {
+          this.page += 1;
+          this.loadingFlag = false;
+          if (!this.moreData) {              // 当没有更多的数据的时候重置变量
             this.loadingFlag = true;
+            return
           }
-        })
+          getNew(this.page).then((res) => {
+            if (res.status == STATUS) {
+              let moreData = res.data.newsList;
+              moreData.forEach((item, idx) => {
+                if (item.publishTime) {
+                  item['timer'] = timer.dateDiff(item.publishTime)
+                }
+              })
+              this.newsList = this.newsList.concat(moreData);
+              this._checkMore(res.data);
+              this.loadingFlag = true;
+            }
+          })
+        }
+      },
+      // 判断是否还有更多的数据
+      _checkMore(data) {
+        if (data.newsList.length < 0 || data.pageCount <= 0 || data.totalCount <= 0) {
+          this.moreData = false;
+        }
       }
     },
     components: {

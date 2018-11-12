@@ -7,8 +7,9 @@
     <!--加载更多数据的动画-->
     <div class="load_more" v-show="loadMore">
       <img src="../../assets/loading.gif" class="more_img" alt="">
-      <span>正在加载...</span>
+      <span>加载中...</span>
     </div>
+    <div class="no_more" v-show="!loadMore && !fullScreen">没有更多数据</div>
   </div>
 
 </template>
@@ -41,7 +42,7 @@
     }
   }
 
-  .load_more {
+  .load_more, .no_more {
     display: flex
     align-items center
     justify-content center
@@ -53,7 +54,10 @@
       height: 100px
       display: inline-block
     }
+  }
 
+  .no_more {
+    padding 20px 0
   }
 </style>
 

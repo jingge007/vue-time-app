@@ -28,9 +28,7 @@
       }
     },
     data() {
-      return {
-
-      }
+      return {}
     },
     created() {
     },
@@ -48,6 +46,7 @@
       display: flex
       border-bottom-1px(#D6D6D6)
       .list_img {
+        background-color: #F3F3F3
         width: 270px
         height: 220px
         border-radius 5px
