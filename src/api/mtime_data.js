@@ -3,6 +3,7 @@ import axios from 'axios'
 const API_PROXY = 'https://bird.ioliu.cn/v1/?url=https://api-m.mtime.cn'
 const API_TIME = 'https://bird.ioliu.cn/v1/?url=http://m.mtime.cn'
 const API_live = 'https://bird.ioliu.cn/v1/?url=http://live-api.mtime.com'
+const API_movie = 'https://bird.ioliu.cn/v1/?url=https://ticket-api-m.mtime.cn'
 
 // 获取热映购票的数据
 export function getIndex(id) {
@@ -46,6 +47,22 @@ export function getNew(page) {
     pageIndex: page
   })
   return axios.get((url), {
+    params: data
+  }).then((res) => {
+    return Promise.resolve(res);
+  }).catch((err) => {
+    console.log(err);
+  })
+}
+
+// 获取电影详情的数据
+export function getMovieDetails(location_id, movie_id) {
+  const url = '/movie/detail.api';
+  const data = Object.assign({}, {
+    locationId: location_id,
+    movieId: movie_id
+  })
+  return axios.get(API_movie + url, {
     params: data
   }).then((res) => {
     return Promise.resolve(res);

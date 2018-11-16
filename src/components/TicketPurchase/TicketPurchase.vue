@@ -14,7 +14,7 @@
     <div class="cross_swiper">
       <scroll :scrollX="this.scrollX" :eventPassthrough="this.eventPassthrough" ref="scroll" :click="this.click">
         <div ref="img_box" class="swiper_box">
-          <div class="swiper_item" v-if="hotTicketData.length" v-for="(item,index) in hotTicketData" :key="index">
+          <div class="swiper_item" v-if="hotTicketData.length" v-for="(item,index) in hotTicketData" :key="index" @click="movieBtn(item)">
             <img :src="item.img" alt="">
             <span class="score" v-show="item.r>0">{{item.r}}</span>
             <div class="isNew" v-show="item.isNew">最新</div>
@@ -85,14 +85,22 @@
         }
       },
       ...mapMutations({
-        set_footer_talg: 'SET_FOOTER_TALG'
+        set_footer_talg: 'SET_FOOTER_TALG',
+        movie_id: 'SET_MOVIE_ID'
       }),
       // 点击进入选择城市列表页
       getCity() {
         this.$router.push('/citylist');
         let talg = false;
         this.set_footer_talg(talg);
-      }
+      },
+      // 进入电影详情页
+      movieBtn(data) {
+        this.movie_id(data);
+        this.$router.push({
+          path: '/movie_details/' + data.movieId
+        })
+      },
     },
     watch: {
       ticketsData() {
