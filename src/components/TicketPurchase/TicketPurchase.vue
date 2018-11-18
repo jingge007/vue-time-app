@@ -54,17 +54,17 @@
     },
     computed: {
       ...mapGetters({
-        cityData: 'cityData'
+        cityData: 'cityData',
+        city_id: 'city_id'
       })
     },
     methods: {
       // 获取热映购票的数据
       _getIndex() {
-        let city_id = null;
         if (Object.keys(this.cityData).length != 0) {
           this.cityName = this.cityData.n
-          city_id = this.cityData.id
-          getIndex(city_id).then((res) => {
+          this.set_city_id(this.cityData.id);
+          getIndex(this.cityData.id).then((res) => {
             if (res.status == STATUS) {
               this.ticketsData = res.data.ms
               this.hotTicketData = this.ticketsData.slice(0, 15)
@@ -74,8 +74,7 @@
           // 获取当前城市
           getCityName().then((city) => {
             this.cityName = city.slice(0, 2);
-            city_id = 366;
-            getIndex(city_id).then((res) => {
+            getIndex(this.city_id).then((res) => {
               if (res.status == STATUS) {
                 this.ticketsData = res.data.ms
                 this.hotTicketData = this.ticketsData.slice(0, 15)
@@ -86,7 +85,7 @@
       },
       ...mapMutations({
         set_footer_talg: 'SET_FOOTER_TALG',
-        movie_id: 'SET_MOVIE_ID'
+        set_city_id: 'SET_CITY_ID'
       }),
       // 点击进入选择城市列表页
       getCity() {
@@ -96,9 +95,8 @@
       },
       // 进入电影详情页
       movieBtn(data) {
-        this.movie_id(data);
         this.$router.push({
-          path: '/movie_details/' + data.movieId
+          path: `/movie_details/${data.movieId}`
         })
       },
     },

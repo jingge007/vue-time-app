@@ -1,6 +1,6 @@
 const state = {
   footer_talg: true,               // 定义底部导航条的展示与隐藏的变量
   cityData: {},                     // 定义获取城市的数据
-  movieId: {}                 // 定义电影详情的数据
+  city_id: 366,
 }
 export default state

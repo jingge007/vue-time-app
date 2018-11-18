@@ -2,4 +2,5 @@ export const footer_talg = state => state.footer_talg         // 底部导航条
 
 export const cityData = state => state.cityData         // 定义获取城市的数据
 
-export const movie_id = state => state.movie_id    // 电影详情的数据
+export const city_id = state => state.city_id         // 定义获取城市的id
+

@@ -42,8 +42,9 @@ const routes = [
   },
   {
     path: '/movie_details/:id',
+    name: 'movieDetails',
     component: movieDetails,
-   // meta: {keepAlive: true}
+    // meta: {keepAlive: true}
   },
 ]
 
@@ -56,6 +57,11 @@ if (window.localStorage.getItem('user')) {
 if (window.localStorage.getItem('cityData')) {
   let item = JSON.parse(window.localStorage.getItem('cityData'));
   store.commit(types.SET_CITY_DATA, item);
+}
+
+if (window.localStorage.getItem('city_id')) {
+  let item = JSON.parse(window.localStorage.getItem('city_id'));
+  store.commit(types.SET_CITY_ID, item);
 }
 
 
