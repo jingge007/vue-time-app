@@ -1,7 +1,7 @@
 <template>
   <div class="newsList">
     <ul>
-      <li class="list_box" v-for="item in newsList">
+      <li class="list_box" v-for="item in newsList" @click="newDetail(item.id)">
         <div class="list_img" :style="{backgroundImage:'url(' + item.image + ')'}">
         </div>
         <div class="list_content">
@@ -19,7 +19,6 @@
 
 <script type="text/ecmascript-6">
 
-
   export default {
     props: {
       newsList: {
@@ -32,7 +31,14 @@
     },
     created() {
     },
-    methods: {}
+    methods: {
+      // 进入新闻详情页
+      newDetail(data) {
+        this.$router.push({
+          path: `/new_details/${data}`
+        })
+      }
+    }
   }
 </script>
 

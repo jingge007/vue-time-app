@@ -71,11 +71,42 @@ export function getMovieDetails(location_id, movie_id) {
   })
 }
 
+// 获取电影影评的数据
+export function getMovieReview(movie_id) {
+  const url = '/Service/callback.mi/Movie/HotLongComments.api';
+  const data = Object.assign({}, {
+    movieId: movie_id
+  })
+  return axios.get(url, {
+    params: data
+  }).then((res) => {
+    return Promise.resolve(res);
+  }).catch((err) => {
+    console.log(err);
+  })
+}
+
+// 获取电影短评的数据
+export function getMovieComment(movie_id, page) {
+  const url = '/Service/callback.mi/Showtime/MovieComments.api';
+  const data = Object.assign({}, {
+    movieId: movie_id,
+    pageIndex: page
+  })
+  return axios.get(url, {
+    params: data
+  }).then((res) => {
+    return Promise.resolve(res);
+  }).catch((err) => {
+    console.log(err);
+  })
+}
+
 // 获取新闻详情的数据
 export function getNewDetail(newsId) {
   const url = '/Service/callback.mi/News/Detail.api';
   const data = Object.assign({}, {
-    newsId: 1585772
+    newsId: newsId
   })
   return axios.get((url), {
     params: data

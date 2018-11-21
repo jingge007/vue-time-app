@@ -64,7 +64,7 @@
     position: fixed
     bottom: 0
     left: 0
-    z-index 9999
+    z-index 1000
     font-size 28px
     color #666
     background-color: #fff

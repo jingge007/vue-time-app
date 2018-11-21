@@ -16,7 +16,7 @@
         <div ref="img_box" class="swiper_box">
           <div class="swiper_item" v-if="hotTicketData.length" v-for="(item,index) in hotTicketData" :key="index" @click="movieBtn(item)">
             <img :src="item.img" alt="">
-            <span class="score" v-show="item.r>0">{{item.r}}</span>
+            <span class="score" v-show="item.r>0">{{normalizeScore(item.r)}}</span>
             <div class="isNew" v-show="item.isNew">最新</div>
             <h2 class="movie_title">{{item.tCn}}</h2>
             <span class="ticket_btn">购票</span>
@@ -67,6 +67,7 @@
           getIndex(this.cityData.id).then((res) => {
             if (res.status == STATUS) {
               this.ticketsData = res.data.ms
+              // this.ticketsData['score'] =
               this.hotTicketData = this.ticketsData.slice(0, 15)
             }
           })
@@ -99,6 +100,14 @@
           path: `/movie_details/${data.movieId}`
         })
       },
+      // 电影评分末尾补零
+      normalizeScore(item) {
+        let len = item.toString().length
+        if (len < 2) {
+          return `${item}.0`
+        }
+        return item
+      }
     },
     watch: {
       ticketsData() {

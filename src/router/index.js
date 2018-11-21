@@ -5,6 +5,7 @@ import login from 'components/login/login'
 import myTime from 'components/my_time/my_time'
 import citylist from 'components/citylist/citylist'
 import movieDetails from 'components/movieDetails/movieDetails'
+import newDetails from 'components/newDetails/newDetails'
 import store from "../store"
 import * as types from '../store/mutation-types'
 
@@ -44,7 +45,11 @@ const routes = [
     path: '/movie_details/:id',
     name: 'movieDetails',
     component: movieDetails,
-    // meta: {keepAlive: true}
+  },
+  {
+    path: '/new_details/:id',
+    name: 'newDetails',
+    component: newDetails,
   },
 ]
 

@@ -19,7 +19,12 @@
         <ticket></ticket>
         <!--新闻列表-->
         <newlist :newsList="newsList"></newlist>
-        <loading :loadMore="moreData" v-show="newsList.length>0"></loading>
+        <!--加载更多数据的动画-->
+        <div class="load_more" v-if="moreData">
+          <img src="../../assets/loading.gif" class="more_img" alt="">
+          <span>加载中...</span>
+        </div>
+        <div class="no_more" v-else>没有更多数据</div>
       </div>
     </scroll>
   </div>
@@ -40,6 +45,7 @@
   export default {
     data() {
       return {
+        fullScreen: false,
         newsList: [],
         probeType: 3,
         listenScroll: true,
@@ -124,6 +130,22 @@
       position: relative
       height: 100%
       overflow: hidden
+      .load_more, .no_more {
+        display: flex
+        align-items center
+        justify-content center
+        font-size 30px
+        text-align: center
+        color #333
+        .more_img {
+          width: 100px
+          height: 100px
+          display: inline-block
+        }
+      }
+      .no_more {
+        padding 20px 0
+      }
     }
     .search {
       padding 15px 30px
