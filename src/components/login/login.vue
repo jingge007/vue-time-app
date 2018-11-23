@@ -40,17 +40,10 @@
 </template>
 
 <script type="text/ecmascript-6">
-  import {mapMutations} from 'vuex'
-
   export default {
     methods: {
-      ...mapMutations({
-        set_footer_talg: 'SET_FOOTER_TALG'
-      }),
       // 返回按钮
       talgBack() {
-        let talg = true;
-        this.set_footer_talg(talg);
         this.$router.back(-1);
       }
     }

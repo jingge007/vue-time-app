@@ -1,13 +1,10 @@
 <template>
   <div class="swiper_box">
-    <swiper :options="swiperOption" ref="mySwiper" v-if="Img_data.length">
-      <swiper-slide v-for="(item,index) in Img_data" :key="index">
-        <a :href="item.url">
-          <img class="swiper_img" :src="item.img" alt="">
-        </a>
-      </swiper-slide>
-      <div class="swiper-pagination " slot="pagination"></div>
-    </swiper>
+    <van-swipe :autoplay="autoplay">
+      <van-swipe-item v-for="(item, index) in imgData" :key="index">
+        <img :src="item.img" class="swiper_img"/>
+      </van-swipe-item>
+    </van-swipe>
   </div>
 </template>
 
@@ -18,23 +15,8 @@
   export default {
     data() {
       return {
-        Img_data: [],
-        swiperOption: {
-          notNextTick: true,      //循环播放
-          loop: true,
-          initialSlide: 0,       //设定初始化时slide的索引
-          autoplay: {
-            delay: 3000,
-            disableOnInteraction: false
-          },
-          effect: 'slide',       // 设置轮播切换效果
-          speed: 800,           //滑动速度
-          direction: 'horizontal',    //滑动方向
-          //分页器设置
-          pagination: {
-            el: '.swiper-pagination'
-          }
-        }
+        imgData: [],
+        autoplay: 3000
       }
     },
     created() {
@@ -44,26 +26,15 @@
       _getSwiper() {
         getSwiper().then((res) => {
           if (res.status == STATUS) {
-            this.Img_data = res.data.topPosters
+            this.imgData = res.data.topPosters
           }
         })
-      },
-      imgBtn(data) {
-        console.log(data)
       }
     }
   }
 </script>
 
 <style lang="stylus" rel="stylesheet/stylus" type="text/stylus" scoped>
-  .swiper_box /deep/ .swiper-pagination-bullet {
-    background #ccc
-  }
-
-  .swiper_box /deep/ .swiper-pagination-bullet-active {
-    background #fff
-  }
-
   .swiper_box {
     width: 100%;
     height: 394px

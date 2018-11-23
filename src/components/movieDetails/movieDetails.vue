@@ -504,7 +504,6 @@
         }
       }
     }
-
     .selection_box {
       position: fixed
       bottom 0

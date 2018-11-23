@@ -17,7 +17,6 @@
   import search from 'base/search/searchBox'
   import city from 'base/city/city'
   import animation from 'base/returnAnimation/returnAnimation'
-  import {mapMutations} from 'vuex'
 
   export default {
     data() {
@@ -27,13 +26,8 @@
       }
     },
     methods: {
-      ...mapMutations({
-        set_footer_talg: 'SET_FOOTER_TALG'
-      }),
       // 返回按钮
       back() {
-        let talg = true;
-        this.set_footer_talg(talg);
         this.$router.back(-1);
       },
       talgBtn(talg) {
@@ -55,7 +49,7 @@
 <style lang="stylus" rel="stylesheet/stylus" type="text/stylus" scoped>
   .citylist_box {
     background-color: #F4F9F7
-    z-index 9000
+    z-index 100
     .citylist_box_nav {
       position: relative
       text-align: center

@@ -1,5 +1,5 @@
 <template>
-  <div class="footer_tab" v-show="footer_talg">
+  <div class="footer_tab" v-show="$route.meta.navShow">
     <router-link tag="div" class="footer_tab_item" to="/time">
       <i class="iconfont icon-yemian iconfont_item"></i>
       <span class="tab_txt">首页</span>
@@ -24,31 +24,12 @@
 </template>
 
 <script type="text/ecmascript-6">
-  import {mapGetters, mapMutations} from 'vuex'
-
   export default {
     data() {
       return {}
     },
-    computed: {
-      ...mapGetters(['footer_talg'])
-    },
-    methods: {
-      ...mapMutations({
-        set_footer_talg: 'SET_FOOTER_TALG'
-      })
-    },
     created() {
 
-    },
-    watch: {
-      '$route'(to, from) {
-        let talg = '';
-        if (to.meta.requireAuth_talg) {
-          talg = false;
-          this.set_footer_talg(talg);
-        }
-      }
     }
   }
 </script>

@@ -110,14 +110,11 @@
         this.$refs.city.scrollTo(0, 0, 800)
       },
       ...mapMutations({
-        cityData: 'SET_CITY_DATA',
-        set_footer_talg: 'SET_FOOTER_TALG'
+        cityData: 'SET_CITY_DATA'
       }),
       // 派发选中城市的数据
       selectCity(city) {
         this.cityData(city)
-        let talg = true
-        this.set_footer_talg(talg)
         this.$router.push('/time')
       },
       // 获取城市列表的数据

@@ -85,14 +85,11 @@
         }
       },
       ...mapMutations({
-        set_footer_talg: 'SET_FOOTER_TALG',
         set_city_id: 'SET_CITY_ID'
       }),
       // 点击进入选择城市列表页
       getCity() {
         this.$router.push('/citylist');
-        let talg = false;
-        this.set_footer_talg(talg);
       },
       // 进入电影详情页
       movieBtn(data) {

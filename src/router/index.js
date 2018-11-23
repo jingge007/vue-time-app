@@ -17,48 +17,50 @@ const routes = [
     path: '/',
     redirect: '/time',
     component: time,
-    // meta: {keepAlive: true}
+    meta: {navShow: true}
   },
   {
     path: '/time',
     component: time,
-    // meta: {keepAlive: true}
+    meta: {navShow: true}
   },
   {
     path: '/my_time',
     component: myTime,
-    meta: {keepAlive: true}
+    meta: {keepAlive: true, navShow: true}
   },
   {
     path: '/login',
     component: login,
     meta: {
-      requireAuth_talg: true
+      requireAuth_talg: true,
+      navShow: false
     }
   },
   {
     path: '/citylist',
     component: citylist,
-    meta: {keepAlive: true}
+    meta: {keepAlive: true, navShow: false}
   },
   {
     path: '/movie_details/:id',
     name: 'movieDetails',
     component: movieDetails,
+    meta: {
+      navShow: false
+    }
   },
   {
     path: '/new_details/:id',
     name: 'newDetails',
     component: newDetails,
+    meta: {
+      navShow: false
+    }
   },
 ]
 
 // 页面刷新时，重新赋值talg
-if (window.localStorage.getItem('user')) {
-  let item = JSON.parse(window.localStorage.getItem('user'));
-  store.commit(types.SET_FOOTER_TALG, item.talg);
-}
-
 if (window.localStorage.getItem('cityData')) {
   let item = JSON.parse(window.localStorage.getItem('cityData'));
   store.commit(types.SET_CITY_DATA, item);

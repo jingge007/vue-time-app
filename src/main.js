@@ -5,16 +5,13 @@ import App from './App'
 import router from './router'
 import store from './store'         // 引入vuex
 import 'lib-flexible'
-import VueAwesomeSwiper from 'vue-awesome-swiper'
-import VueLazyload from 'vue-lazyload'
-import 'swiper/dist/css/swiper.css'
+import Vant from 'vant'
+import {Lazyload} from 'vant'
+import 'vant/lib/index.css'
 import 'common/style/index.styl'
 
-Vue.use(VueAwesomeSwiper)
-Vue.use(VueLazyload, {
-  error: require('./assets/error_loading.png'),                  // 这个是请求失败后显示的图片
-  loading: require('./assets/load.gif')               // 这个是加载的loading过渡效果
-})
+Vue.use(Vant)
+Vue.use(Lazyload)
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */
