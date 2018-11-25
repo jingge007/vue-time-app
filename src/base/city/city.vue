@@ -25,10 +25,6 @@
             :class="{'selectLetter':currentIndex === index}"
       >{{item}}</span>
       </div>
-      <!--返回顶部-->
-      <div class="toTop" @click="backtop" v-show="is_top">
-        <i class="iconfont icon-fanhuidingbu"></i>
-      </div>
       <!--加载动画-->
       <loading v-show="!cityList.length" :fullScreen="fullScreen"></loading>
       <!--滚动固定标题的实现-->
@@ -71,7 +67,6 @@
     data() {
       return {
         fullScreen: true,
-        is_top: false,
         currentIndex: 0,
         scrollY: -1,
         diff: -1,
@@ -105,10 +100,6 @@
       },
     },
     methods: {
-      // 返回顶部
-      backtop() {
-        this.$refs.city.scrollTo(0, 0, 800)
-      },
       ...mapMutations({
         cityData: 'SET_CITY_DATA'
       }),
@@ -185,8 +176,7 @@
         }
         if (index < 0) {
           index = 0
-        }
-        else if (index > this.cityHeight.length - 2) {
+        } else if (index > this.cityHeight.length - 2) {
           index = this.cityHeight.length - 2
         }
         this.currentIndex = Number(index)
@@ -202,16 +192,14 @@
       cityWord() {
         if (this.cityWord != '') {
           this.talg_city = false;
-        }
-        else {
+        } else {
           this.talg_city = true;
         }
       },
       filtereCity() {
         if (this.filtereCity.length > 0) {
           this.is_talg_city = false;
-        }
-        else {
+        } else {
           this.is_talg_city = true;
         }
       },
@@ -221,7 +209,6 @@
         // 当滚动到顶部时，newY>0
         if (newY >= 0) {
           this.currentIndex = 0
-          this.is_top = false
           return
         }
         // 在中间部分滚动
@@ -231,9 +218,6 @@
           if (-newY > height1 && -newY < height2) {    // 因为是向下滑动所以newY是负值
             this.currentIndex = i
             this.diff = Math.floor(height2 + newY)               // 两个字母标题栏之间的距离
-            if (-newY > cityHeight[1]) {
-              this.is_top = true
-            }
             return
           }
         }
@@ -247,7 +231,6 @@
         }
         this.fixedTop = fixedTop
         this.$refs.fixedBox.style.transform = `translate3d(0,${fixedTop}px,0)`
-        // this.$refs.colorTitle.style.color = '#FFCD32'
       }
     },
 
@@ -267,6 +250,7 @@
     bottom: 0
     width: 100%
     overflow: hidden
+
     .city_title {
       padding-left 20px
       display: flex
@@ -276,8 +260,10 @@
       font-size 30px
       background-color: #D6DBD9
     }
+
     .cityBox {
       position: relative
+
       .city_list {
         .city_list_name {
           display: flex
@@ -285,6 +271,7 @@
           flex-wrap wrap
           align-items center
           padding 0 60px 0 35px
+
           .city_item {
             display: block
             width: 100%;
@@ -296,6 +283,7 @@
         }
       }
     }
+
     .letter_box {
       background-color: #EEF3F2
       width: 35px
@@ -306,6 +294,7 @@
       transform translateY(-42%)
       border-radius 40px
       z-index 100
+
       .letter_item {
         width: 100%
         height: 40px
@@ -315,15 +304,18 @@
         font-size 25px
         color #666
       }
+
       .selectLetter {
         color #F97F41
       }
     }
+
     .list-fixed {
       position: absolute
       top: -2px
       left: 0
       width: 100%
+
       .fixed-title {
         padding-left 20px
         display: flex
@@ -334,25 +326,18 @@
         background-color: #D6DBD9
       }
     }
-    .toTop {
-      position: fixed
-      bottom 80px
-      right 50px
-      z-index: 500
-      .iconfont {
-        font-size 80px
-        color #F9A340
-      }
-    }
+
     .search_city_box {
       width: 100%;
       color #333
       font-size 30px
+
       .search_city_item {
         display: block
         padding 20px 0 20px 40px
         border-bottom-1px(#D6D6D6)
       }
+
       .is_city {
         text-align center
         padding-top 20px
