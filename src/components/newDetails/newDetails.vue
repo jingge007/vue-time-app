@@ -37,7 +37,7 @@
             <span>{{'共'+imgData.length+'张'}}</span>
           </div>
         </div>
-        <div class="news_content" v-html="newsData.content"></div>
+        <div class="news_content" v-html="newsData.content" @click="imgBtn($event)" ref="imgItem"></div>
       </div>
     </scroll>
     <!--加载动画-->
@@ -51,6 +51,7 @@
   import {timer} from 'common/js/public_time'
   import loading from 'base/loading/loading'
   import scroll from 'base/scroll/scroll'
+  import {images} from 'common/js/public_time'
 
   export default {
     data() {
@@ -77,6 +78,8 @@
         getNewDetail(newsId).then((res) => {
           if (res.status == STATUS) {
             this.newsData = res.data;
+            this.handleImg(res.data.content)
+            console.log(images.getimgsrc(res.data.content))
             if (res.data.relations) {
               this.imgData = res.data.relations
             }
@@ -93,9 +96,30 @@
         let date = Date.parse(time)
         this.nowTime = timer.dateDiff(date);
       },
+      // 处理文章的img图片问题
+      handleImg(data) {
+        console.log(data)
+        let imgReg = /<img.*?(?:>|\/>)/gi;
+        let talg = data.match(imgReg)
+        for (let i = 0; i < talg.length; i++) {
+          console.log(talg[i])
+        }
+        // console.log(this.$refs.imgItem.img)
+        //  console.log(talg)
+      },
       // 返回顶部
       backtop() {
         this.$refs.news.scrollTo(0, 0, 800)
+      },
+      //
+      imgBtn(e) {
+        console.log(e.target)
+       // console.log(e.target.setAttribute("data-index", 2))
+        // if (e.target == 'img') {
+        //   console.log('我点击的是图片');
+        // } else {
+        //   console.log('我点击的不是图片');
+        // }
       }
     },
     watch: {
@@ -203,7 +227,6 @@
           }
         }
       }
-
 
       .new_title {
         padding 25px 0 10px 0

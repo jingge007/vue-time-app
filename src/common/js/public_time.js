@@ -126,4 +126,34 @@ export const timer = {
   }
 }
 
+// 正则匹配出所有图片及所有图片地址src
+export const images = {
+  getimgsrc(htmlstr) {
+    let list = [];
+    let imgReg = /<img.*?(?:>|\/>)/gi;
+    let srcReg = /src=[\'\"]?([^\'\"]*)[\'\"]?/i;
+    let arr = htmlstr.match(imgReg);
+    for (let i = 0; i < arr.length; i++) {
+      let src = arr[i].match(srcReg);
+      //获取图片地址
+      if (src[1]) {
+        let item = {
+          id: i + 1,
+          image: src[1]
+        }
+        list.push(item);
+      }
+      if (src[0]) {
+        var t = src[0].replace(/src/i, "href");
+        //alert(t);
+      }
+      if (src.input) {
+
+       // console.log(src.input)
+      }
+    }
+    return list
+  }
+}
+
 

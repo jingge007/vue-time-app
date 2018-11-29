@@ -73,6 +73,7 @@ if (window.localStorage.getItem('city_id')) {
 
 
 const router = new Router({
+  mode: 'history',
   routes
 })
 
