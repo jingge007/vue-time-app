@@ -27,9 +27,15 @@
                   :data="imgData"
                   :scrollX="this.scrollX"
                   :eventPassthrough="this.eventPassthrough"
+                  ref="listImg"
           >
             <div class="img_list" ref="img_box">
-              <img :src="item.image" v-for="(item,index) in imgData" alt="" :key="index" class="img_item">
+              <img :src="item.url1"
+                   v-for="(item,index) in imgData"
+                   alt="" :key="index"
+                   class="img_item"
+                   @click="previewBtn"
+              >
             </div>
           </scroll>
           <div class="img_num">
@@ -52,6 +58,7 @@
   import loading from 'base/loading/loading'
   import scroll from 'base/scroll/scroll'
   import {images} from 'common/js/public_time'
+  import {ImagePreview} from 'vant'
 
   export default {
     data() {
@@ -59,13 +66,20 @@
         newsData: {},
         nowTime: '',
         loading_talg: true,
-        eventPassthrough: 'vertical',           // 忽略better-scroll垂直滚动的方向
+        eventPassthrough: 'vertical',   // 忽略better-scroll垂直滚动的方向
         scrollX: true,
-        imgData: []
+        imgData: [],
+        imgList: [],
       }
     },
     created() {
       this._getNewDetail()
+    },
+    mounted() {
+      this.$nextTick(() => {
+        this.imgSwiper();
+        this.$refs.news.refresh();
+      })
     },
     methods: {
       // 返回按钮
@@ -78,10 +92,9 @@
         getNewDetail(newsId).then((res) => {
           if (res.status == STATUS) {
             this.newsData = res.data;
-            this.handleImg(res.data.content)
-            console.log(images.getimgsrc(res.data.content))
-            if (res.data.relations) {
-              this.imgData = res.data.relations
+            this.imgList = images.getimgsrc(res.data.content);
+            if (res.data.images) {
+              this.imgData = res.data.images
             }
             this.handleTime(res.data.time)
             this.loading_talg = false;
@@ -96,43 +109,52 @@
         let date = Date.parse(time)
         this.nowTime = timer.dateDiff(date);
       },
-      // 处理文章的img图片问题
-      handleImg(data) {
-        console.log(data)
-        let imgReg = /<img.*?(?:>|\/>)/gi;
-        let talg = data.match(imgReg)
-        for (let i = 0; i < talg.length; i++) {
-          console.log(talg[i])
-        }
-        // console.log(this.$refs.imgItem.img)
-        //  console.log(talg)
-      },
       // 返回顶部
       backtop() {
-        this.$refs.news.scrollTo(0, 0, 800)
+        this.$refs.news.scrollTo(0, 0, 500)
       },
-      //
+      // 点击图片预览图片
       imgBtn(e) {
-        console.log(e.target)
-       // console.log(e.target.setAttribute("data-index", 2))
-        // if (e.target == 'img') {
-        //   console.log('我点击的是图片');
-        // } else {
-        //   console.log('我点击的不是图片');
-        // }
+        let img_arr = [];
+        let currentIndex = 0;
+        let talg_src = e.target.getAttribute("src")
+        if (talg_src != null) {
+          this.imgList.forEach((item, idx) => {
+            img_arr.push(item.src)
+            if (item.src == talg_src) {
+              currentIndex = item.id;
+            }
+          })
+          ImagePreview({
+            images: img_arr,
+            startPosition: currentIndex,
+            // showIndicators: true
+          });
+        }
+      },
+      // 计算左右滑动模块的宽度
+      imgSwiper() {
+        if (this.imgData) {
+          let picWidth = 125
+          let margin = 7
+          let width = (picWidth + margin) * this.imgData.length - margin
+          this.$refs.img_box.style.width = width + 'px'
+          this.$nextTick(() => {
+            this.$refs.listImg.refresh();
+          })
+        }
+      },
+      previewBtn() {
+
       }
     },
     watch: {
       // scroll组件计算高度，确保正确滚动
       newsData() {
-        setTimeout(() => {
-          // 计算左右滑动模块的宽度
-          let picWidth = 125
-          let margin = 7
-          let width = (picWidth + margin) * this.imgData.length - margin
-          this.$refs.img_box.style.width = width + 'px'
-          this.$refs.news.refresh()
-        }, 20)
+        this.$nextTick(() => {
+          this.imgSwiper();
+          this.$refs.news.refresh();
+        })
       }
     },
     components: {
@@ -191,23 +213,19 @@
       bottom: 20px
       padding 0 25px
       overflow: hidden
-
       .images_box {
         .img_box {
           width: 100%
           overflow: hidden
-
           .img_list {
             display: flex
             align-items center
-
             .img_item {
               width: 250px
               height: 300px
               display: inline-block
               margin-right 14px
             }
-
             .img_item:last-child {
               margin-right 0px
             }
