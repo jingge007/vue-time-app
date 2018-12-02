@@ -22,25 +22,13 @@
           <span>{{newsData.source}}</span>
           <span class="timer">{{nowTime}}</span>
         </div>
-        <div class="images_box" v-show="imgData.length>3">
-          <scroll class="img_box"
-                  :data="imgData"
-                  :scrollX="this.scrollX"
-                  :eventPassthrough="this.eventPassthrough"
-                  ref="listImg"
-          >
-            <div class="img_list" ref="img_box">
-              <img :src="item.url1"
-                   v-for="(item,index) in imgData"
-                   alt="" :key="index"
-                   class="img_item"
-                   @click="previewBtn"
-              >
-            </div>
-          </scroll>
-          <div class="img_num">
-            <span>图集</span>
-            <span>{{'共'+imgData.length+'张'}}</span>
+        <div class="img_list" v-show="imgData.length>0" @click="imgListBtn">
+          <img :src="img_big" alt="" class="imgBig">
+          <div class="img_box">
+            <span>
+              <i class="iconfont icon-tupian"></i>
+            </span>
+            <span class="text">{{imgData.length+'图'}}</span>
           </div>
         </div>
         <div class="news_content" v-html="newsData.content" @click="imgBtn($event)" ref="imgItem"></div>
@@ -48,6 +36,22 @@
     </scroll>
     <!--加载动画-->
     <loading v-show="loading_talg"></loading>
+    <!--图集预览-->
+    <div class="preview_box" v-show="preview_talg">
+      <span class="close_box" @click="closeBtn">
+        <i class="iconfont icon-iconfontclose"></i>
+      </span>
+      <div class="swiper_box">
+        <van-swipe @change="onChange">
+          <van-swipe-item v-for="(item, index) in imgData" :key="index">
+            <img :src="item.url1" class="swiper_img">
+          </van-swipe-item>
+          <div class="custom-indicator" slot="indicator">
+            {{ current + 1 }}/4
+          </div>
+        </van-swipe>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -66,10 +70,11 @@
         newsData: {},
         nowTime: '',
         loading_talg: true,
-        eventPassthrough: 'vertical',   // 忽略better-scroll垂直滚动的方向
-        scrollX: true,
         imgData: [],
         imgList: [],
+        img_big: '',
+        preview_talg: true,
+        current: 0,
       }
     },
     created() {
@@ -77,7 +82,6 @@
     },
     mounted() {
       this.$nextTick(() => {
-        this.imgSwiper();
         this.$refs.news.refresh();
       })
     },
@@ -95,6 +99,7 @@
             this.imgList = images.getimgsrc(res.data.content);
             if (res.data.images) {
               this.imgData = res.data.images
+              this.img_big = this.imgData.slice(0, 1)[0].url1;
             }
             this.handleTime(res.data.time)
             this.loading_talg = false;
@@ -132,27 +137,22 @@
           });
         }
       },
-      // 计算左右滑动模块的宽度
-      imgSwiper() {
-        if (this.imgData) {
-          let picWidth = 125
-          let margin = 7
-          let width = (picWidth + margin) * this.imgData.length - margin
-          this.$refs.img_box.style.width = width + 'px'
-          this.$nextTick(() => {
-            this.$refs.listImg.refresh();
-          })
-        }
+      // 点击查看图集
+      imgListBtn() {
+        this.preview_talg = true;
       },
-      previewBtn() {
-
+      // 关闭图集按钮
+      closeBtn() {
+        this.preview_talg = false;
+      },
+      onChange(index) {
+        this.current = index;
       }
     },
     watch: {
       // scroll组件计算高度，确保正确滚动
       newsData() {
         this.$nextTick(() => {
-          this.imgSwiper();
           this.$refs.news.refresh();
         })
       }
@@ -213,35 +213,34 @@
       bottom: 20px
       padding 0 25px
       overflow: hidden
-      .images_box {
-        .img_box {
+
+      .img_list {
+        width: 100%
+        margin 0 auto 30px
+        position: relative
+
+        .imgBig {
           width: 100%
-          overflow: hidden
-          .img_list {
-            display: flex
-            align-items center
-            .img_item {
-              width: 250px
-              height: 300px
-              display: inline-block
-              margin-right 14px
-            }
-            .img_item:last-child {
-              margin-right 0px
-            }
-          }
+          height: auto
         }
 
-        .img_num {
-          display: flex
-          justify-content center
-          align-items center
-          padding 15px 0 30px 0
-          font-size 30px
-          color #B3B3B3
+        .img_box {
+          padding 4px 15px
+          position: absolute
+          bottom 15px
+          right 10px
+          border-radius 40px
+          background-color: rgba(4, 4, 4, .65)
 
-          span:nth-child(1) {
-            margin-right 15px
+          span {
+            display: inline-block
+            color #fff
+            font-size 24px
+
+            .icon-tupian {
+              font-size 26px
+              color #fff
+            }
           }
         }
       }
@@ -276,6 +275,37 @@
 
         /deep/ div {
           line-height 50px
+        }
+      }
+    }
+
+    .preview_box {
+      z-index 8888
+      position absolute
+      top: 0
+      left: 0
+      width: 100%
+      height: 100%
+      background-color: rgba(4, 4, 4, .7)
+
+      .close_box {
+        display: inline-block
+        margin 10px 0 0 15px
+
+        .icon-iconfontclose {
+          color #fff
+          font-size 45px
+        }
+      }
+
+      .swiper_box {
+        width: 100%;
+        height: 100%
+
+        .swiper_img {
+          width: 100%;
+          height: auto
+          display: inline-block
         }
       }
     }
