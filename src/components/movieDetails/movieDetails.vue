@@ -89,6 +89,8 @@
         </div>
         <!--导演/演员列表-->
         <actor-list :actorList="actorList"></actor-list>
+        <!--短评-->
+        <comment :movie_id="movie_id"></comment>
       </div>
       <!--加载动画-->
       <loading v-show="!talgShow"></loading>
@@ -115,6 +117,7 @@
   import {STATUS} from 'api/config_status'
   import loading from 'base/loading/loading'
   import actorList from 'base/actorList/actorList'
+  import comment from 'base/comment/comment'
 
   export default {
     data() {
@@ -128,6 +131,7 @@
         talgShow: false,
         movie_title: 0,
         boxData: {},
+        movie_id: '',
       }
     },
     mounted() {
@@ -145,8 +149,8 @@
       // 获取电影详情数据
       _getMovieDetails() {
         let location_id = this.city_id;
-        let movie_id = this.$route.params.id;
-        getMovieDetails(location_id, movie_id).then((res) => {
+        this.movie_id = this.$route.params.id;
+        getMovieDetails(location_id, this.movie_id).then((res) => {
           if (res.status == STATUS) {
             this.talgShow = true;
             this.handleData(res.data.data.basic)
@@ -191,10 +195,8 @@
           // 电影剧照的数据
           this.countNum = data.stageImg.count;
           this.imgData = data.stageImg.list;
-          console.log(data)
           this.basicData = data;
         }
-
       },
       // 返回按钮
       back() {
@@ -227,7 +229,8 @@
     watch: {},
     components: {
       loading,
-      actorList
+      actorList,
+      comment
     }
   }
 </script>

@@ -22,7 +22,7 @@
           <span>{{newsData.source}}</span>
           <span class="timer">{{nowTime}}</span>
         </div>
-        <div class="img_list" v-show="imgData.length>0" @click="imgListBtn">
+        <div class="img_list" v-show="imgData.length>0">
           <img :src="img_big" alt="" class="imgBig">
           <div class="img_box">
             <span>
@@ -36,22 +36,6 @@
     </scroll>
     <!--加载动画-->
     <loading v-show="loading_talg"></loading>
-    <!--图集预览-->
-    <div class="preview_box" v-show="preview_talg">
-      <span class="close_box" @click="closeBtn">
-        <i class="iconfont icon-iconfontclose"></i>
-      </span>
-      <div class="swiper_box">
-        <van-swipe @change="onChange">
-          <van-swipe-item v-for="(item, index) in imgData" :key="index">
-            <img :src="item.url1" class="swiper_img">
-          </van-swipe-item>
-          <div class="custom-indicator" slot="indicator">
-            {{ current + 1 }}/4
-          </div>
-        </van-swipe>
-      </div>
-    </div>
   </div>
 </template>
 
@@ -73,8 +57,6 @@
         imgData: [],
         imgList: [],
         img_big: '',
-        preview_talg: true,
-        current: 0,
       }
     },
     created() {
@@ -101,8 +83,14 @@
               this.imgData = res.data.images
               this.img_big = this.imgData.slice(0, 1)[0].url1;
             }
+            if (res.data.hasOwnProperty("videoList")) {
+              console.log('有')
+            } else {
+              console.log('没有')
+            }
             this.handleTime(res.data.time)
             this.loading_talg = false;
+            this.$refs.news.refresh();
           } else {
             this.loading_talg = true;
           }
@@ -122,8 +110,8 @@
       imgBtn(e) {
         let img_arr = [];
         let currentIndex = 0;
-        let talg_src = e.target.getAttribute("src")
-        if (talg_src != null) {
+        let talg_src = e.target.getAttribute("src");
+        if (talg_src != null && talg_src.slice(-3) == 'jpg') {
           this.imgList.forEach((item, idx) => {
             img_arr.push(item.src)
             if (item.src == talg_src) {
@@ -136,17 +124,6 @@
             // showIndicators: true
           });
         }
-      },
-      // 点击查看图集
-      imgListBtn() {
-        this.preview_talg = true;
-      },
-      // 关闭图集按钮
-      closeBtn() {
-        this.preview_talg = false;
-      },
-      onChange(index) {
-        this.current = index;
       }
     },
     watch: {
@@ -275,37 +252,6 @@
 
         /deep/ div {
           line-height 50px
-        }
-      }
-    }
-
-    .preview_box {
-      z-index 8888
-      position absolute
-      top: 0
-      left: 0
-      width: 100%
-      height: 100%
-      background-color: rgba(4, 4, 4, .7)
-
-      .close_box {
-        display: inline-block
-        margin 10px 0 0 15px
-
-        .icon-iconfontclose {
-          color #fff
-          font-size 45px
-        }
-      }
-
-      .swiper_box {
-        width: 100%;
-        height: 100%
-
-        .swiper_img {
-          width: 100%;
-          height: auto
-          display: inline-block
         }
       }
     }

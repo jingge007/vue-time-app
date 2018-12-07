@@ -3,7 +3,11 @@
     <ul>
       <li class="list_box" v-for="item in newsList" @click="newDetail(item.id)">
         <div class="list_01" v-if="item.images.length==0">
-          <div class="list_img" :style="{backgroundImage:'url(' + item.image + ')'}"></div>
+          <div class="list_img" :style="{backgroundImage:'url(' + item.image + ')'}">
+            <span class="icon" v-show="item.type == 2">
+              <i class="iconfont icon-shipin"></i>
+            </span>
+          </div>
           <div class="list_content">
             <h2 class="list_title">{{item.title}}</h2>
             <div class="list_nav">
@@ -73,12 +77,28 @@
           background-size cover
           background-position center
           overflow hidden
+          position: relative
+          .icon {
+            position: absolute
+            left: 50%
+            top: 50%
+            transform translate(-50%, -50%)
+            .icon-shipin {
+              font-size 90px
+              color #fff
+            }
+          }
         }
         .list_content {
           flex 1
           .list_title {
             font-size 32px
             color #000
+            overflow : hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
           }
           .list_nav {
             margin-top 70px
@@ -107,9 +127,14 @@
       .list_title {
         font-size 32px
         color #000
-        padding-bottom 15px
+        overflow : hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 1;
+        -webkit-box-orient: vertical;
       }
       .img_list {
+        margin-top 15px
         width: 100%
         display: flex
         align-items center

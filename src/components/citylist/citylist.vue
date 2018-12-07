@@ -1,22 +1,19 @@
 <template>
-  <animation>
-    <div class="citylist_box">
-      <div class="citylist_box_nav">
-        选择城市
-        <span class="back" @click="back">
+  <div class="citylist_box">
+    <div class="citylist_box_nav">
+      选择城市
+      <span class="back" @click="back">
         <i class="iconfont icon-zuoyoujiantou1"></i>
       </span>
-      </div>
-      <search @talg="talgBtn" @set_keyword="set_keyword"></search>
-      <city :letter="talg_letter" :cityWord="cityWord"></city>
     </div>
-  </animation>
+    <search @talg="talgBtn" @set_keyword="set_keyword"></search>
+    <city :letter="talg_letter" :cityWord="cityWord"></city>
+  </div>
 </template>
 
 <script type="text/ecmascript-6">
   import search from 'base/search/searchBox'
   import city from 'base/city/city'
-  import animation from 'base/returnAnimation/returnAnimation'
 
   export default {
     data() {
@@ -38,10 +35,14 @@
         this.cityWord = word
       }
     },
+    beforeRouteLeave(to, from, next) {
+      // 设置下一个路由的 meta.keepAlive
+      to.meta.keepAlive = false;
+      next();
+    },
     components: {
       search,
-      city,
-      animation
+      city
     }
   }
 </script>

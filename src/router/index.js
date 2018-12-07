@@ -16,18 +16,25 @@ const routes = [
   {
     path: '/',
     redirect: '/time',
-    component: time,
-    meta: {navShow: true}
+    component: time
   },
   {
     path: '/time',
     component: time,
-    meta: {navShow: true}
+    name: 'time',
+    meta: {
+      navShow: true,
+      keepAlive: false,
+    }
   },
   {
     path: '/my_time',
     component: myTime,
-    meta: {keepAlive: true, navShow: true}
+    name: 'my_time',
+    meta: {
+      keepAlive: true,
+      navShow: true
+    }
   },
   {
     path: '/login',
@@ -40,14 +47,19 @@ const routes = [
   {
     path: '/citylist',
     component: citylist,
-    meta: {keepAlive: true, navShow: false}
+    name: 'citylist',
+    meta: {
+      keepAlive: false,
+      navShow: false
+    }
   },
   {
     path: '/movie_details/:id',
     name: 'movieDetails',
     component: movieDetails,
     meta: {
-      navShow: false
+      navShow: false,
+      keepAlive: false,
     }
   },
   {
