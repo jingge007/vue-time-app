@@ -4,11 +4,11 @@
     <div class="citylist_box_nav">
       <span>新闻详情</span>
       <span class="back" @click="back">
-          <i class="iconfont icon-zuoyoujiantou1"></i>
-      </span>
+  <i class="iconfont icon-zuoyoujiantou1"></i>
+  </span>
       <span class="toTop" @click="backtop">
-        <i class="iconfont icon-fanhuidingbu"></i>
-      </span>
+  <i class="iconfont icon-fanhuidingbu"></i>
+  </span>
     </div>
     <scroll class="list_scroll"
             ref="news"
@@ -56,7 +56,7 @@
         loading_talg: true,
         imgData: [],
         imgList: [],
-        img_big: '',
+        img_big: ''
       }
     },
     created() {
@@ -82,11 +82,11 @@
             if (res.data.images) {
               this.imgData = res.data.images
               this.img_big = this.imgData.slice(0, 1)[0].url1;
-            }
-            if (res.data.hasOwnProperty("videoList")) {
-              console.log('有')
-            } else {
-              console.log('没有')
+
+              this.imgData.forEach((item, index) => {
+                item['src'] = item.url1;
+              })
+              console.log(this.imgData)
             }
             this.handleTime(res.data.time)
             this.loading_talg = false;
@@ -124,7 +124,8 @@
             // showIndicators: true
           });
         }
-      }
+      },
+
     },
     watch: {
       // scroll组件计算高度，确保正确滚动
@@ -142,6 +143,14 @@
 </script>
 
 <style lang="stylus" rel="stylesheet/stylus" type="text/stylus" scoped>
+  .preview-img {
+    display: none
+  }
+
+  .view_img {
+    display: block !important
+  }
+
   .new_details {
     background-color: #fff
     width: 100%

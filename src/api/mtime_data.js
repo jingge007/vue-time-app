@@ -166,3 +166,20 @@ export function getLiveDetail(locationId, liveId) {
   })
 }
 
+// 获取电影票房的数据
+export function getBoxOffice(page, box_office_id) {
+  const url = '/Service/callback.mi/TopList/TopListDetailsByRecommend.api';
+  const data = Object.assign({}, {
+    type: 1,
+    pageIndex: page,
+    pageSubAreaID: box_office_id
+  })
+  return axios.get((url), {
+    params: data
+  }).then((res) => {
+    return Promise.resolve(res);
+  }).catch((err) => {
+    console.log(err);
+  })
+}
+

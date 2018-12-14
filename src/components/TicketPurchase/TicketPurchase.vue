@@ -17,9 +17,10 @@
           <div class="swiper_item" v-if="hotTicketData.length" v-for="(item,index) in hotTicketData" :key="index" @click="movieBtn(item)">
             <img :src="item.img" alt="">
             <span class="score" v-show="item.r>0">{{normalizeScore(item.r)}}</span>
-            <div class="isNew" v-show="item.isNew">最新</div>
+            <div class="isNew" v-if="item.isNew">最新</div>
+            <div class="isNew isHasTrailer" v-else>预售</div>
             <h2 class="movie_title">{{item.tCn}}</h2>
-            <span class="ticket_btn">购票</span>
+            <span class="ticket_btn" :class="[item.isNew?'goupiao':'yushou']">购票</span>
           </div>
         </div>
       </scroll>
@@ -184,7 +185,7 @@
             right: 0
             z-index 100
           }
-          .isNew {
+          .isNew, .isHasTrailer {
             position: absolute
             top: 0
             left: 10px
@@ -197,6 +198,9 @@
             line-height: 55px
             -webkit-clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 80%, 0 100%);
             clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 80%, 0 100%);
+          }
+          .isHasTrailer {
+            background-color: #7CB62D
           }
           .movie_title {
             text-align: center
@@ -215,7 +219,12 @@
             margin 0 auto
             line-height: 50px
             text-align: center
+          }
+          .goupiao {
             background-image: -webkit-linear-gradient(0deg, #FFA042, #F1792F)
+          }
+          .yushou {
+            background-image: -webkit-linear-gradient(0deg, #7CB62D, #6AAC13)
           }
         }
         .swiper_item:last-child {

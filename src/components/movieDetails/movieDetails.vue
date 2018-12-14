@@ -74,6 +74,23 @@
             </div>
           </div>
         </div>
+        <!--直播-->
+        <div class="live_box" v-show="liveData.status == 4">
+          <div class="img_title">
+            <span>直播</span>
+            <div class="img_icon">
+              <span>{{liveData.count}}</span>
+              <i class="iconfont icon-zuoyoujiantou"></i>
+            </div>
+          </div>
+          <div class="live_content">
+            <img :src="liveData.img" alt="" class="live_img">
+            <div class="live_center">
+              <h2 class="title">{{liveData.title}}</h2>
+              <p class="text">{{liveData.playNumTag}}</p>
+            </div>
+          </div>
+        </div>
         <!--图片列表-->
         <div class="img_list">
           <div class="img_title">
@@ -89,7 +106,7 @@
         </div>
         <!--导演/演员列表-->
         <actor-list :actorList="actorList"></actor-list>
-        <!--短评-->
+        <!--短评/影评-->
         <comment :movie_id="movie_id"></comment>
       </div>
       <!--加载动画-->
@@ -132,6 +149,7 @@
         movie_title: 0,
         boxData: {},
         movie_id: '',
+        liveData: {}
       }
     },
     mounted() {
@@ -155,6 +173,10 @@
             this.talgShow = true;
             this.handleData(res.data.data.basic)
             this.boxData = res.data.data.boxOffice;
+            if (res.data.data.live.status == 4) {
+              this.liveData = res.data.data.live;
+            }
+
           } else {
             this.talgShow = false;
           }
@@ -227,6 +249,10 @@
       }
     },
     watch: {},
+    beforeRouteLeave(to, from, next) {
+      to.meta.keepAlive = true;
+      next()
+    },
     components: {
       loading,
       actorList,
@@ -464,6 +490,60 @@
               .iconfont {
                 font-size 38px
                 color #969B99
+              }
+            }
+          }
+        }
+        .live_box {
+          margin-top 25px
+          padding 20px
+          background-color: #fff
+          .img_title {
+            display: flex
+            align-items center
+            justify-content space-between
+            font-size 32px
+            color #333
+            margin-bottom 15px
+            .img_icon {
+              font-size 32px
+              display: flex
+              align-items center
+              color #9CA19F
+              .iconfont {
+                font-size 40px
+                padding-bottom 6px
+                color #9CA19F
+              }
+            }
+          }
+          .live_content {
+            display: flex
+            .live_img {
+              width: 220px
+              height: 150px
+              margin-right 25px
+            }
+            .live_center {
+              flex 1
+              display: flex
+              flex-direction column
+              justify-content space-between
+              .title {
+                padding-top 5px
+                font-size 30px
+                height: 75px
+                color #333
+                overflow: hidden;
+                text-overflow: ellipsis;
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+              }
+              .text {
+                padding-bottom 5px
+                color #C5C5C5
+                font-size 26px
               }
             }
           }
