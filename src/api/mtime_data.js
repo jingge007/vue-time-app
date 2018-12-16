@@ -4,6 +4,7 @@ const API_PROXY = 'https://bird.ioliu.cn/v1/?url=https://api-m.mtime.cn'
 const API_TIME = 'https://bird.ioliu.cn/v1/?url=http://m.mtime.cn'
 const API_live = 'https://bird.ioliu.cn/v1/?url=http://live-api.mtime.com'
 const API_movie = 'https://bird.ioliu.cn/v1/?url=https://ticket-api-m.mtime.cn'
+const API_video = 'https://bird.ioliu.cn/v1/?url=https://video-topic-m.mtime.cn'
 
 // 获取热映购票的数据
 export function getIndex(id) {
@@ -175,6 +176,23 @@ export function getBoxOffice(page, box_office_id) {
     pageSubAreaID: box_office_id
   })
   return axios.get((url), {
+    params: data
+  }).then((res) => {
+    return Promise.resolve(res);
+  }).catch((err) => {
+    console.log(err);
+  })
+}
+
+// 获取视频列表的数据
+export function getVideoList(movieId, page, type) {
+  const url = '/api/proxy/ticket/movie/category/video.api';
+  const data = Object.assign({}, {
+    type: type,
+    pageIndex: page,
+    movieId: movieId
+  })
+  return axios.get((API_video + url), {
     params: data
   }).then((res) => {
     return Promise.resolve(res);

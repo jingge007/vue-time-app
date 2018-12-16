@@ -6,6 +6,7 @@ import myTime from 'components/my_time/my_time'
 import citylist from 'components/citylist/citylist'
 import movieDetails from 'components/movieDetails/movieDetails'
 import newDetails from 'components/newDetails/newDetails'
+import videos from 'components/videoList/videoList'
 import store from "../store"
 import * as types from '../store/mutation-types'
 
@@ -57,6 +58,15 @@ const routes = [
     path: '/movie_details/:id',
     name: 'movieDetails',
     component: movieDetails,
+    meta: {
+      navShow: false,
+      keepAlive: false,
+    }
+  },
+  {
+    path: '/movie_details/:id/videos',
+    name: 'videos',
+    component: videos,
     meta: {
       navShow: false,
       keepAlive: false,

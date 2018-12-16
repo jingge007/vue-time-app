@@ -18,7 +18,7 @@
       <div ref="talgBox" class="movie_content">
         <div class="movie_details_box">
           <div class="movie_header">
-            <div class="movie_img">
+            <div class="movie_img" @click="videosBtn(basicData.movieId)">
               <img :src="basicData.img" alt="">
               <span class="play_icon">
               <i class="iconfont icon-bofangshipin"></i>
@@ -108,6 +108,10 @@
         <actor-list :actorList="actorList"></actor-list>
         <!--短评/影评-->
         <comment :movie_id="movie_id"></comment>
+        <!--广告-->
+        <div class="advList" v-show="advList.length>0">
+          <img class="list_item" v-for="item in advList" :src="item.img">
+        </div>
       </div>
       <!--加载动画-->
       <loading v-show="!talgShow"></loading>
@@ -149,7 +153,8 @@
         movie_title: 0,
         boxData: {},
         movie_id: '',
-        liveData: {}
+        liveData: {},
+        advList: []
       }
     },
     mounted() {
@@ -173,6 +178,11 @@
             this.talgShow = true;
             this.handleData(res.data.data.basic)
             this.boxData = res.data.data.boxOffice;
+            let advData = res.data.data.advertisement.advList;
+            advData.forEach((item, idx) => {
+              item['img'] = item.url.substring(0, item.url.length - 4) + 'jpg'
+            })
+            this.advList = advData;
             if (res.data.data.live.status == 4) {
               this.liveData = res.data.data.live;
             }
@@ -246,6 +256,12 @@
           return `${item}.0`
         }
         return item
+      },
+      // 进入视频列表
+      videosBtn(id) {
+        this.$router.push({
+          path: `/movie_details/${id}/videos`
+        })
       }
     },
     watch: {},
@@ -268,6 +284,7 @@
       width: 100%
       position: relative
       padding 200px 0 80px 0
+
       .filter_box {
         position: absolute
         top: 0
@@ -281,6 +298,7 @@
         transition: filter 1s;
         filter: blur(40px);
       }
+
       .movie_details_icon {
         width: 100%
         position: fixed
@@ -290,25 +308,30 @@
         height: 90px
         line-height: 90px
         color #F4FAFB
+
         .back {
           position: absolute
           top: 50%
           transform translateY(-50%)
           left: 20px
+
           .icon-zuoyoujiantou1 {
             font-size 50px
           }
         }
+
         .collection {
           position: absolute
           top: 50%
           transform translateY(-50%)
           right: 25px
+
           .icon-shoucang {
             font-size 50px
           }
         }
       }
+
       .movie_title {
         width: 100%
         position: fixed
@@ -322,6 +345,7 @@
         text-align: center
         background-color: #202534
         animation all .5s linear
+
         span {
           width: 70%
           height: 100%
@@ -332,12 +356,15 @@
 
       .movie_content {
         background-color: #ebebeb
+
         .movie_details_box {
           padding 0 25px
           background-color: #fff
+
           .movie_header {
             display: flex
             margin-bottom 60px
+
             .movie_img {
               padding 4px 4px 0 4px
               background-color: #fff
@@ -346,22 +373,26 @@
               display: inline-block
               margin-top -100px
               position: relative
+
               img {
                 width: 240px
                 height: 350px
                 display: inline-block
               }
+
               .play_icon {
                 position: absolute
                 top: 50%
                 left: 50%
                 transform translate(-50%, -50%)
+
                 .iconfont {
                   font-size 130px
                   color #fff
                 }
               }
             }
+
             .header_content {
               flex 1
               margin-top -100px
@@ -369,41 +400,49 @@
               color #FAFFFF
               position: relative
               padding-left 30px
+
               .title {
                 font-size 32px
                 width 420px
                 no-wrap()
               }
+
               .txt {
                 width 320px
                 margin-top 5px
                 font-size 28px
                 no-wrap()
               }
+
               .movie_timer {
                 margin-top 25px
                 display: flex
                 align-items center
                 font-size 28px
                 color #333
+
                 .egg_txt {
                   color #659d0e
                 }
               }
+
               .movie_type, .show_time, .comment {
                 margin-top 10px
                 color #333
                 font-size 28px
               }
+
               .comment {
                 color #FF8703
                 width 420px
                 no-wrap()
               }
+
               .movie_screen {
                 display flex
                 align-items center
                 margin-top 12px
+
                 .screen_item {
                   padding 5px 8px
                   border 1px solid #899FAD
@@ -412,6 +451,7 @@
                   margin-right 15px
                 }
               }
+
               .score_box {
                 background-color: #669E14
                 color #fff
@@ -420,10 +460,12 @@
                 top 65px
                 padding 17px 10px
                 text-align: center
+
                 .big {
                   font-size 38px
                   padding-right 28px
                 }
+
                 .small {
                   font-size 30px
                   display: inline-block
@@ -442,22 +484,27 @@
             overflow: hidden
             transition: all .3s ease
           }
+
           .more_txt {
             height auto
             overflow auto
           }
+
           .more_button {
             text-align: center
             padding 10px 0 8px 0
+
             .icon-down_arrow {
               font-size 45px
               color #BCC1BF
             }
+
             .icon-down_arrow:before {
               display: inline-block
               transform rotate(0deg)
               transition: all .5s ease
             }
+
             .rotate_icon:before {
               display: inline-block
               transform rotate(-180deg)
@@ -472,21 +519,25 @@
           align-items center
           justify-content space-around
           padding 25px 0
+
           .box_item {
             display: flex
             flex-direction column
             justify-content: center
             align-items center
+
             .num_txt {
               font-size 40px
               color #FF8703
               margin-bottom 10px
             }
+
             .text {
               display: flex
               align-items center
               font-size 26px
               color #969B99
+
               .iconfont {
                 font-size 38px
                 color #969B99
@@ -494,10 +545,12 @@
             }
           }
         }
+
         .live_box {
           margin-top 25px
           padding 20px
           background-color: #fff
+
           .img_title {
             display: flex
             align-items center
@@ -505,11 +558,13 @@
             font-size 32px
             color #333
             margin-bottom 15px
+
             .img_icon {
               font-size 32px
               display: flex
               align-items center
               color #9CA19F
+
               .iconfont {
                 font-size 40px
                 padding-bottom 6px
@@ -517,18 +572,22 @@
               }
             }
           }
+
           .live_content {
             display: flex
+
             .live_img {
               width: 220px
               height: 150px
               margin-right 25px
             }
+
             .live_center {
               flex 1
               display: flex
               flex-direction column
               justify-content space-between
+
               .title {
                 padding-top 5px
                 font-size 30px
@@ -540,6 +599,7 @@
                 -webkit-line-clamp: 2;
                 -webkit-box-orient: vertical;
               }
+
               .text {
                 padding-bottom 5px
                 color #C5C5C5
@@ -548,10 +608,12 @@
             }
           }
         }
+
         .img_list {
           margin-top 25px
           padding 20px
           background-color: #fff
+
           .img_title {
             display: flex
             align-items center
@@ -559,11 +621,13 @@
             font-size 32px
             color #333
             margin-bottom 15px
+
             .img_icon {
               font-size 32px
               display: flex
               align-items center
               color #9CA19F
+
               .iconfont {
                 font-size 40px
                 padding-bottom 6px
@@ -571,11 +635,13 @@
               }
             }
           }
+
           .img_box {
             width: 100%
             display: flex
             align-items center
             justify-content space-around
+
             span {
               width: 160px
               height: 160px
@@ -585,8 +651,21 @@
             }
           }
         }
+
+        .advList {
+          margin-top 25px
+          padding 20px
+          background-color: #fff
+
+          .list_item {
+            width: 100%
+            height: auto
+            display: block
+          }
+        }
       }
     }
+
     .selection_box {
       position: fixed
       bottom 0
@@ -598,6 +677,7 @@
       height: 100px
       align-items center
       color #838383
+
       .want_item, .score_item {
         border-top 2px solid #E4E4E4
         box-sizing border-box
@@ -608,16 +688,19 @@
         align-items center
         justify-content center
         position: relative
+
         .iconfont {
           font-size 45px
           color #838383
         }
+
         .txt {
           display: inline-block
           margin-top 2px
           font-size 25px
           color #838383
         }
+
         .line {
           position: absolute
           right 0
@@ -628,9 +711,11 @@
           background-color: #E4E4E4
         }
       }
+
       .score_item {
         flex 3
       }
+
       .selection_item {
         flex 6
         height: 100%
