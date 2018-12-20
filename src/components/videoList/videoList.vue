@@ -12,29 +12,41 @@
       <van-tabs v-model="active" swipeable sticky>
         <van-tab v-for="(item,index) in video_nav" :title="item.name" :key="index">
           <div class="video_conter">
-            <div class="video_box" v-for="talg in videoList">
-              <h2 class="title">{{talg.title}}</h2>
-              <div class="play">
-                <img :src="talg.image" alt="" class="video_img">
-                <span class="play_icon">
-                <i class="iconfont icon-bofangshipin"></i>
-              </span>
+            <van-list
+              v-model="loading"
+              :finished="finished"
+              finished-text="没有更多数据了"
+              @load="onLoad"
+              :offset="offset"
+            >
+              <div class="video_box" v-for="talg in videoList">
+                <h2 class="title">{{talg.title}}</h2>
+                <div class="play">
+                  <img :src="talg.image" alt="" class="video_img">
+                  <span class="play_icon">
+                    <i class="iconfont icon-bofangshipin"></i>
+                  </span>
+                </div>
+                <div class="operation_box">
+                  <span class="play_num">{{talg.playCount+'次播放'}}</span>
+                  <span class="comment_number"></span>
+                </div>
               </div>
-              <div class="operation_box">
-                <span class="play_num">{{talg.playCount+'次播放'}}</span>
-                <span class="comment_number"></span>
-              </div>
-            </div>
+              <div class="finished_text" v-show="finished">没有更多数据了</div>
+            </van-list>
           </div>
         </van-tab>
       </van-tabs>
     </div>
+    <!--加载动画-->
+    <loading v-show="!talgShow"></loading>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
   import {getVideoList} from 'api/mtime_data'
   import {STATUS} from 'api/config_status'
+  import loading from 'base/loading/loading'
 
   export default {
     data() {
@@ -43,6 +55,14 @@
         video_title: '',
         video_nav: [],
         videoList: [],
+        loading: false,
+        finished: false,
+        offset: 0,
+        page: 1,
+        type: -1,
+        movie_id: this.$route.params.id,
+        pageCount: '',
+        talgShow: false,
       }
     },
     created() {
@@ -55,17 +75,47 @@
       },
       // 获取视频列表的数据
       _getVideoList() {
-        let type = -1;
-        let page = 1;
-        let movie_id = this.$route.params.id;
-        getVideoList(movie_id, page, type).then((res) => {
+        this.type = this.active - 1;
+        getVideoList(this.movie_id, this.page, this.type).then((res) => {
           if (res.status == STATUS) {
+            this.talgShow = true;
             this.video_title = res.data.data.movieTitle;
             this.video_nav = res.data.data.category;
             this.videoList = res.data.data.videoList;
+            this.pageCount = res.data.data.pageCount;
+          } else {
+            this.talgShow = false;
           }
         })
+      },
+      // 加载更多数据
+      onLoad() {
+        this.page = ++this.page;
+        if (this.page > this.pageCount) {
+          this.loading = false;
+        } else {
+          getVideoList(this.movie_id, this.page, this.type).then((res) => {
+            if (res.status == STATUS) {
+              this.loading = false;
+              let item = res.data.data.videoList
+              this.videoList = this.videoList.concat(item);
+              if (this.page == this.pageCount) {
+                this.finished = true;
+              }
+            }
+          })
+        }
+      },
+    },
+    watch: {
+      active() {
+        this.page = 1;
+
+        this._getVideoList();
       }
+    },
+    components: {
+      loading
     }
   }
 </script>
@@ -149,7 +199,6 @@
             }
           }
 
-
           .title {
             margin-bottom 15px
             font-size 30px
@@ -166,6 +215,15 @@
               font-size 23px
             }
           }
+        }
+        .finished_text {
+          height: 80px
+          width: 100%
+          display: flex
+          align-items center
+          justify-content: center
+          color #666
+          font-size 28px
         }
       }
     }
